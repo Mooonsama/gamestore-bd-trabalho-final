@@ -2,7 +2,7 @@
 
 Sistema completo de loja de jogos desenvolvido com **PostgreSQL**, **Node.js/TypeScript** e **Next.js**, implementando o modelo ERE corrigido do TP1.
 
------
+
 
 ## 🏗️ Arquitetura
 
@@ -11,14 +11,14 @@ Sistema completo de loja de jogos desenvolvido com **PostgreSQL**, **Node.js/Typ
   - **Banco de Dados**: PostgreSQL 15+
   - **Containerização**: Docker + Docker Compose
 
------
+
 
 ## 📋 Pré-requisitos
 
   - Docker e Docker Compose instalados
   - Git (para clonar o repositório)
 
------
+
 
 ## 🚀 Como Executar
 
@@ -52,7 +52,7 @@ Este comando irá:
 
 Abra seu navegador e acesse: `http://localhost:3000`
 
------
+
 
 ## 👥 Usuários de Teste
 
@@ -68,7 +68,7 @@ Abra seu navegador e acesse: `http://localhost:3000`
   - **Email**: `admin.jogos@gamestore.com` | **Senha**: `admin123` (gerenciar jogos)
   - **Email**: `admin.users@gamestore.com` | **Senha**: `admin123` (gerenciar usuários)
 
------
+
 
 ## 🗄️ Estrutura do Banco de Dados
 
@@ -129,7 +129,7 @@ Abra seu navegador e acesse: `http://localhost:3000`
       - FK: `id_jogo` → `jogo.id`
       - Atributo: `texto`
 
------
+
 
 ## 🔧 Funcionalidades Implementadas
 
@@ -163,7 +163,7 @@ Abra seu navegador e acesse: `http://localhost:3000`
   - ✅ Dados de teste realistas
   - ✅ Consultas de Álgebra Relacional
 
------
+
 
 ## 📈 Dados de Teste
 
@@ -177,7 +177,7 @@ O sistema inclui:
   - 15 vínculos de gestão sem sobreposição
   - Cartões bancários e curiosidades dos jogos
 
------
+
 
 ## 🔍 Consultas SQL Demonstrativas
 
@@ -192,7 +192,7 @@ O arquivo `sql/05_queries_algebra.sql` contém 15 consultas demonstrando:
   - Divisão relacional
   - Funções de janela (RANK)
 
------
+
 
 ## 🔠 Endpoints da API
 
@@ -224,7 +224,7 @@ O arquivo `sql/05_queries_algebra.sql` contém 15 consultas demonstrando:
 
   - `GET /api/health` - Status da API
 
------
+
 
 ## 🧪 Testando a API
 
@@ -246,7 +246,7 @@ curl -X POST http://localhost:3001/api/usuarios/12345678901/compras \
   -d '{"id_jogo":1,"valor_pago":0.00}'
 ```
 
------
+
 
 ## 🔒 Validações e Constraints
 
@@ -265,7 +265,7 @@ curl -X POST http://localhost:3001/api/usuarios/12345678901/compras \
   - **Valor**: não negativo
   - **Cartão**: validações de formato e validade
 
------
+
 
 ## 📁 Estrutura do Projeto
 
@@ -297,7 +297,7 @@ curl -X POST http://localhost:3001/api/usuarios/12345678901/compras \
     └── package.json
 ```
 
------
+
 
 ## 🐛 Troubleshooting
 
@@ -343,7 +343,7 @@ docker-compose logs -f api
 docker-compose logs -f web
 ```
 
------
+
 
 ## 📈 Melhorias Futuras
 
@@ -357,7 +357,7 @@ docker-compose logs -f web
   - Cache com Redis
   - Testes automatizados
 
------
+
 
 ## 📝 Notas de Implementação
 
@@ -381,12 +381,12 @@ docker-compose logs -f web
   - ✅ Consultas de Álgebra Relacional
   - ✅ README com instruções completas
 
------
+
 
 ## 🤝 Contribuição
 
 Este projeto foi desenvolvido como trabalho acadêmico seguindo as especificações do TP1 corrigido.
 
------
+
 
 **Desenvolvido com ❤️ para a disciplina de Banco de Dados**
