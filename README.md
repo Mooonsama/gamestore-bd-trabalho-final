@@ -185,7 +185,7 @@ O arquivo `sql/05_queries_algebra.sql` contém 15 consultas demonstrando:
 
   - Seleção ($\\sigma$)
   - Projeção ($\\pi$)
-  - Junções ($\\bowtie$, $\\ljoin$)
+  - Junções ($\\bowtie$, $\\lgroup \\join)
   - Agregação (GROUP BY/HAVING)
   - Operações de conjunto ($\\cup$, $\\cap$, $-$)
   - Subconsultas (EXISTS, NOT EXISTS)
