@@ -91,34 +91,43 @@ export default function MinhasCompras() {
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         {compra.jogo.nome}
                       </h3>
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <span className="w-20 font-medium">Gênero:</span>
-                          <span>{compra.jogo.genero}</span>
+                        <div className="space-y-2 text-sm text-gray-700 leading-relaxed">
+                            <div className="grid grid-cols-2 gap-x-16 gap-y-2">
+                              <div className="flex items-center">
+                                <span className="w-36 font-medium text-gray-500 flex items-center">
+                                  <span className="mr-2">🎮</span>Gênero:
+                                </span>
+                                <span className="ml-2 flex items-center">
+                                  {compra.jogo.genero}
+                                </span>
+                              </div>
+                              <div className="flex items-center">
+                                <span className="w-36 font-medium text-gray-500 flex items-center">
+                                  <span className="mr-2">🏢</span>Desenvolvedora:
+                                </span>
+                                <span className="ml-2 flex items-center">
+                                  {compra.jogo.desenvolvedora.nome}
+                                </span>
+                              </div>
+                              <div className="flex items-center">
+                                <span className="w-36 font-medium text-gray-500 flex items-center">
+                                  <Calendar className="w-4 h-4 mr-2 text-blue-500" />Compra:
+                                </span>
+                                <span className="ml-2">
+                                  {new Date(compra.data_compra).toLocaleDateString('pt-BR')} às{' '}
+                                  {new Date(compra.data_compra).toLocaleTimeString('pt-BR')}
+                                </span>
+                              </div>
+                              <div className="flex items-center text-green-700">
+                                <span className="w-36 font-medium text-gray-500 flex items-center">
+                                  <DollarSign className="w-4 h-4 mr-2" />Valor:
+                                </span>
+                                <span className="ml-2 font-semibold">
+                                  {Number(compra.valor_pago) === 0 ? 'Grátis' : `R$ ${Number(compra.valor_pago).toFixed(2)}`}
+                                </span>
+                              </div>
+                            </div>
                         </div>
-                        <div className="flex items-center">
-                          <span className="w-20 font-medium">Desenvolvedora:</span>
-                          <span>{compra.jogo.desenvolvedora.nome}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          <span className="w-16 font-medium">Compra:</span>
-                          <span>
-                            {new Date(compra.data_compra).toLocaleDateString('pt-BR')} às{' '}
-                            {new Date(compra.data_compra).toLocaleTimeString('pt-BR')}
-                          </span>
-                        </div>
-                        <div className="flex items-center text-green-600">
-                          <DollarSign className="w-4 h-4 mr-1" />
-                          <span className="w-16 font-medium">Valor:</span>
-                          <span className="font-semibold">
-                            {Number(compra.valor_pago) === 0 
-                              ? 'Grátis' 
-                              : `R$ ${Number(compra.valor_pago).toFixed(2)}`
-                            }
-                          </span>
-                        </div>
-                      </div>
                     </div>
                     <div className="ml-4">
                       <Link

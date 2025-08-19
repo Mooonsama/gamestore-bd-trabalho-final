@@ -12,6 +12,14 @@ export default function Home() {
   const [jogos, setJogos] = useState<Jogo[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtroGenero, setFiltroGenero] = useState('');
+  const [descricaoExpandida, setDescricaoExpandida] = useState<{ [key: number]: boolean }>({});
+
+  const toggleDescricao = (id: number) => {
+    setDescricaoExpandida((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   useEffect(() => {
     fetchJogos();
@@ -55,7 +63,7 @@ export default function Home() {
             <select
               value={filtroGenero}
               onChange={(e) => setFiltroGenero(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 bg-white"
+              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Todos os gêneros</option>
               {generos.map(genero => (
@@ -66,49 +74,78 @@ export default function Home() {
 
           {/* Grid de jogos */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {jogosFiltrados.map((jogo) => (
-              <div key={jogo.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{jogo.nome}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{jogo.genero}</p>
-                  <p className="text-sm text-gray-500 mb-4 line-clamp-3">{jogo.descricao}</p>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center text-yellow-500">
-                      <Star className="w-4 h-4 mr-1" />
-                      <span className="text-sm font-medium">
-                        {jogo.media_avaliacao > 0 ? jogo.media_avaliacao.toFixed(1) : 'N/A'}
-                      </span>
-                      <span className="text-xs text-gray-500 ml-1">
-                        ({jogo.total_avaliacoes})
-                      </span>
+            {jogosFiltrados.map((jogo) => {
+              const descricao = jogo.descricao ?? '';
+              const descricaoLonga = descricao.length > 120;
+              const expandida = descricaoExpandida[jogo.id];
+
+              return (
+                <div
+                  key={jogo.id}
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full"
+                >
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{jogo.nome}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{jogo.genero}</p>
+                    <div className="mb-4">
+                      <p
+                        className={
+                          "text-sm text-gray-500 " +
+                          (!expandida && descricaoLonga ? "line-clamp-3" : "")
+                        }
+                      >
+                        {descricao}
+                      </p>
+                      {descricaoLonga && (
+                        <button
+                          className="text-blue-600 text-xs mt-1 hover:underline focus:outline-none"
+                          onClick={() => toggleDescricao(jogo.id)}
+                        >
+                          {expandida ? "Ver menos" : "Ver mais"}
+                        </button>
+                      )}
                     </div>
-                    <div className="flex items-center text-green-600">
-                      <DollarSign className="w-4 h-4 mr-1" />
-                      <span className="font-semibold">
-                        {jogo.valor === 0 ? 'Grátis' : `R$ ${jogo.valor.toFixed(2)}`}
-                      </span>
+
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center text-yellow-500">
+                        <Star className="w-4 h-4 mr-1" />
+                        <span className="text-sm font-medium">
+                          {jogo.media_avaliacao > 0 ? jogo.media_avaliacao.toFixed(1) : 'N/A'}
+                        </span>
+                        <span className="text-xs text-gray-500 ml-1">
+                          ({jogo.total_avaliacoes})
+                        </span>
+                      </div>
+                      <div className="flex items-center text-green-600">
+                        <DollarSign className="w-4 h-4 mr-1" />
+                        <span className="font-semibold">
+                          {jogo.valor === 0 ? 'Grátis' : `R$ ${jogo.valor.toFixed(2)}`}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center text-xs text-gray-500 mb-4">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {new Date(jogo.data_lancamento).toLocaleDateString('pt-BR')}
+                    </div>
+
+                    <div className="text-xs text-gray-500 mb-4 flex flex-wrap gap-1">
+                      <span className="font-medium">Desenvolvedora:</span>
+                      <span className="break-words">{jogo.nome_desenvolvedora}</span>
+                    </div>
+
+                    <div className="mt-auto">
+                      <Link
+                        href={`/jogo/${jogo.id}`}
+                        className="block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                      >
+                        Ver Detalhes
+                      </Link>
                     </div>
                   </div>
-
-                  <div className="flex items-center text-xs text-gray-500 mb-4">
-                    <Calendar className="w-3 h-3 mr-1" />
-                    {new Date(jogo.data_lancamento).toLocaleDateString('pt-BR')}
-                  </div>
-
-                  <p className="text-xs text-gray-500 mb-4 truncate" title={`Desenvolvedora: ${jogo.nome_desenvolvedora}`}>
-                    Dev: {jogo.nome_desenvolvedora}
-                  </p>
-
-                  <Link
-                    href={`/jogo/${jogo.id}`}
-                    className="block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-                  >
-                    Ver Detalhes
-                  </Link>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {jogosFiltrados.length === 0 && (

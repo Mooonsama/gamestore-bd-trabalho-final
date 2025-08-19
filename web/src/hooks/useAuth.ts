@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { User } from '@/types';
+import { useRouter } from 'next/navigation';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const token = Cookies.get('token');
@@ -31,6 +33,7 @@ export const useAuth = () => {
     Cookies.remove('token');
     Cookies.remove('user');
     setUser(null);
+    router.push('/'); // Redireciona para a página inicial
   };
 
   const isAdmin = () => {

@@ -135,10 +135,10 @@ export default function JogoDetalhes() {
                     <span className="text-sm font-medium text-gray-500 w-24">Avaliação:</span>
                     <div className="flex items-center">
                       <Star className="w-4 h-4 mr-1 text-yellow-500" />
-                      <span className="text-sm font-medium">
+                      <span className="text-sm font-medium text-black">
                         {jogo.media_avaliacao > 0 ? jogo.media_avaliacao.toFixed(1) : 'N/A'}
                       </span>
-                      <span className="text-xs text-gray-500 ml-1">
+                      <span className="text-xs text-black ml-1">
                         ({jogo.total_avaliacoes} avaliações)
                       </span>
                     </div>
