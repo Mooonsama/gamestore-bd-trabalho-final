@@ -1,4 +1,4 @@
-# 🎮 GameStore - Sistema Completo de Loja de Jogos
+# 🎮 MAETS GameStore - Sistema Completo de Loja de Jogos
 
 Projeto acadêmico da disciplina **Banco de Dados I**, implementando um **sistema de loja de jogos digitais**.  
 O sistema foi construído a partir do **modelo ERE corrigido do TP1** e entregue conforme as exigências do **TP2**.
@@ -180,10 +180,46 @@ GROUP BY j.nome;
 
 ## 🚀 Como Executar
 
+```bash
+git clone <url-do-repositorio>
+cd BD\ trabalho\ final
+```
+
 ### Usando Docker Compose
+
+1. Inicie os serviços
+
 ```bash
 docker-compose up -d
 ```
+Este comando irá:
+
+  - Criar e inicializar o banco PostgreSQL
+  - Executar automaticamente os scripts SQL na ordem correta
+  - Construir e iniciar a API
+  - Construir e iniciar o frontend
+
+2. Aguarde a inicialização
+
+  - O banco de dados será inicializado com todos os dados de teste
+  - A API estará disponível em: `http://localhost:3001`
+  - O frontend estará disponível em: `http://localhost:3000`
+
+3. Acesse o pgAdmin (Administração do Banco)
+
+- **URL**: `http://localhost:8080`
+- **Email**: `admin@gamestore.com`
+- **Senha**: `admin123`
+
+**Para conectar ao banco no pgAdmin:**
+1. Clique em "Add New Server"
+2. **General Tab**: Name = "GameStore DB"
+3. **Connection Tab**:
+   - Host: `db`
+   - Port: `5432`
+   - Database: `gamestore`
+   - Username: `postgres`
+   - Password: `postgres`
 
 ### Usando PostgreSQL + pgAdmin
 
@@ -234,12 +270,39 @@ docker-compose up -d
 
 ---
 
-## 📈 Melhorias Futuras
+## 👥 Usuários de Teste
 
-- Upload de imagens  
-- Carrinho de compras  
-- Wishlist  
-- Relatórios administrativos  
-- Integração com pagamento  
-- Cache Redis  
-- Testes automatizados
+### Usuários Comuns
+
+  - **Email**: `ana.silva@email.com` | **Senha**: `senha123`
+  - **Email**: `bruno.santos@email.com` | **Senha**: `senha123`
+  - **Email**: `carla.oliveira@email.com` | **Senha**: `senha123`
+
+### Administradores
+
+  - **Email**: `admin.master@gamestore.com` | **Senha**: `admin123` (todas as permissões)
+  - **Email**: `admin.jogos@gamestore.com` | **Senha**: `admin123` (gerenciar jogos)
+  - **Email**: `admin.users@gamestore.com` | **Senha**: `admin123` (gerenciar usuários)
+
+## 📝 Notas de Implementação
+
+### Decisões Técnicas
+
+  - **Prisma ORM**: Escolhido pela type-safety e facilidade de uso
+  - **JWT**: Para autenticação stateless
+  - **Tailwind CSS**: Para estilização rápida e consistente
+  - **Zod**: Para validação de dados tanto no frontend quanto no backend
+  - **Docker**: Para facilitar o *deployment* e desenvolvimento
+
+### Conformidade com Requisitos
+
+  - ✅ Modelo ERE corrigido implementado
+  - ✅ Mapeamento relacional completo
+  - ✅ Constraints e triggers funcionais
+  - ✅ API REST segura
+  - ✅ Frontend moderno e funcional
+  - ✅ Docker Compose com 3 serviços
+  - ✅ Dados de teste realistas
+  - ✅ Consultas de Álgebra Relacional
+  - ✅ README com instruções completas
+
