@@ -1,7 +1,9 @@
 -- Índices para otimização de consultas
 CREATE INDEX idx_jogo_nome ON jogo(nome);
-CREATE INDEX idx_jogo_genero ON jogo(genero);
 CREATE INDEX idx_jogo_desenvolvedora ON jogo(id_desenvolvedora);
+CREATE INDEX idx_genero_nome ON genero(nome);
+CREATE INDEX idx_jogo_genero_jogo ON jogo_genero(id_jogo);
+CREATE INDEX idx_jogo_genero_genero ON jogo_genero(id_genero);
 CREATE INDEX idx_desenvolvedora_nome ON desenvolvedora(nome);
 CREATE INDEX idx_compra_usuario ON compra(id_usuario);
 CREATE INDEX idx_compra_jogo ON compra(id_jogo);

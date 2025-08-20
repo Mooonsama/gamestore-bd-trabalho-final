@@ -7,18 +7,20 @@ export class JogoService {
       SELECT 
         j.id,
         j.nome,
-        j.genero,
+        STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
         j.descricao,
         j.data_lancamento,
         j.valor::float as valor,
         j.id_desenvolvedora,
         d.nome as nome_desenvolvedora,
         COALESCE(ROUND(AVG(a.nota::numeric), 2), 0)::float as media_avaliacao,
-        COUNT(a.nota)::int as total_avaliacoes
+        COUNT(DISTINCT a.id_usuario)::int as total_avaliacoes
       FROM jogo j
+      LEFT JOIN jogo_genero jg ON j.id = jg.id_jogo
+      LEFT JOIN genero g ON jg.id_genero = g.id
       LEFT JOIN avaliacao a ON j.id = a.id_jogo
       LEFT JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj
-      GROUP BY j.id, j.nome, j.genero, j.descricao, j.data_lancamento, j.valor, j.id_desenvolvedora, d.nome
+      GROUP BY j.id, j.nome, j.descricao, j.data_lancamento, j.valor, j.id_desenvolvedora, d.nome
       ORDER BY j.nome
     `;
     return result;
@@ -29,19 +31,21 @@ export class JogoService {
       SELECT 
         j.id,
         j.nome,
-        j.genero,
+        STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
         j.descricao,
         j.data_lancamento,
         j.valor::float as valor,
         j.id_desenvolvedora,
         d.nome as nome_desenvolvedora,
         COALESCE(ROUND(AVG(a.nota::numeric), 2), 0)::float as media_avaliacao,
-        COUNT(a.nota)::int as total_avaliacoes
+        COUNT(DISTINCT a.id_usuario)::int as total_avaliacoes
       FROM jogo j
+      LEFT JOIN jogo_genero jg ON j.id = jg.id_jogo
+      LEFT JOIN genero g ON jg.id_genero = g.id
       LEFT JOIN avaliacao a ON j.id = a.id_jogo
       LEFT JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj
       WHERE j.id = ${id}
-      GROUP BY j.id, j.nome, j.genero, j.descricao, j.data_lancamento, j.valor, j.id_desenvolvedora, d.nome
+      GROUP BY j.id, j.nome, j.descricao, j.data_lancamento, j.valor, j.id_desenvolvedora, d.nome
     `;
     return result[0] || null;
   }
@@ -50,7 +54,6 @@ export class JogoService {
     return prisma.jogo.create({
       data: {
         nome: data.nome,
-        genero: data.genero,
         descricao: data.descricao,
         data_lancamento: new Date(data.data_lancamento),
         valor: data.valor,
@@ -58,6 +61,11 @@ export class JogoService {
       },
       include: {
         desenvolvedora: true,
+        generos: {
+          include: {
+            genero: true,
+          },
+        },
       },
     });
   }
@@ -67,7 +75,6 @@ export class JogoService {
       where: { id },
       data: {
         nome: data.nome,
-        genero: data.genero,
         descricao: data.descricao,
         data_lancamento: data.data_lancamento ? new Date(data.data_lancamento) : undefined,
         valor: data.valor,
@@ -75,6 +82,11 @@ export class JogoService {
       },
       include: {
         desenvolvedora: true,
+        generos: {
+          include: {
+            genero: true,
+          },
+        },
       },
     });
   }

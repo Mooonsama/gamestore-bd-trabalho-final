@@ -2,9 +2,11 @@
 
 -- 1. SELEÇÃO (σ) - Jogos do gênero RPG lançados após 2015
 -- σ(genero='RPG' AND data_lancamento > '2015-01-01')(jogo)
-SELECT id, nome, genero, data_lancamento, valor
-FROM jogo 
-WHERE genero = 'RPG' AND data_lancamento > '2015-01-01';
+SELECT DISTINCT j.id, j.nome, j.data_lancamento, j.valor
+FROM jogo j
+JOIN jogo_genero jg ON j.id = jg.id_jogo
+JOIN genero g ON jg.id_genero = g.id
+WHERE g.nome = 'RPG' AND j.data_lancamento > '2015-01-01';
 
 -- 2. PROJEÇÃO (π) - Nome, gênero e média de avaliação dos jogos
 -- π(nome, genero, media_avaliacao)(jogo_com_media)
@@ -22,10 +24,12 @@ ORDER BY p.nome, c.data_compra;
 
 -- 4. JUNÇÃO EXTERNA ESQUERDA - Jogos sem avaliação
 -- jogo ⟕ avaliacao
-SELECT j.nome, j.genero, COUNT(a.id_jogo) as total_avaliacoes
+SELECT j.nome, STRING_AGG(g.nome, ', ') as generos, COUNT(a.id_jogo) as total_avaliacoes
 FROM jogo j
+LEFT JOIN jogo_genero jg ON j.id = jg.id_jogo
+LEFT JOIN genero g ON jg.id_genero = g.id
 LEFT OUTER JOIN avaliacao a ON j.id = a.id_jogo
-GROUP BY j.id, j.nome, j.genero
+GROUP BY j.id, j.nome
 HAVING COUNT(a.id_jogo) = 0;
 
 -- 5. AGREGAÇÃO com GROUP BY/HAVING - Média por gênero >= 8
@@ -38,9 +42,9 @@ ORDER BY media_genero DESC;
 
 -- 6. UNIÃO (∪) - Títulos de jogos RPG unidos com jogos de Ação
 -- π(nome)(σ(genero='RPG')(jogo)) ∪ π(nome)(σ(genero='Ação')(jogo))
-SELECT nome FROM jogo WHERE genero = 'RPG'
+SELECT DISTINCT j.nome FROM jogo j JOIN jogo_genero jg ON j.id = jg.id_jogo JOIN genero g ON jg.id_genero = g.id WHERE g.nome = 'RPG'
 UNION
-SELECT nome FROM jogo WHERE genero = 'Ação'
+SELECT DISTINCT j.nome FROM jogo j JOIN jogo_genero jg ON j.id = jg.id_jogo JOIN genero g ON jg.id_genero = g.id WHERE g.nome = 'Ação'
 ORDER BY nome;
 
 -- 7. INTERSEÇÃO (∩) - Jogos comprados E avaliados por usuário específico
@@ -146,13 +150,12 @@ GROUP BY EXTRACT(YEAR FROM data_compra), EXTRACT(MONTH FROM data_compra)
 ORDER BY ano, mes;
 
 -- 15. CONSULTA com SUBCONSULTA CORRELACIONADA - Jogos com avaliação acima da média do gênero
-SELECT j.nome, j.genero, jm.media_avaliacao
-FROM jogo j
-JOIN jogo_com_media jm ON j.id = jm.id
+SELECT jm.nome, jm.genero, jm.media_avaliacao
+FROM jogo_com_media jm
 WHERE jm.media_avaliacao > (
     SELECT AVG(jm2.media_avaliacao)
     FROM jogo_com_media jm2
-    WHERE jm2.genero = j.genero
+    WHERE jm2.genero = jm.genero
     AND jm2.media_avaliacao > 0
 )
-ORDER BY j.genero, jm.media_avaliacao DESC;
+ORDER BY jm.genero, jm.media_avaliacao DESC;

@@ -33,9 +33,15 @@ export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction
   next();
 };
 
-export const requirePermission = (permission: string) => {
+export const requirePermission = (permission: 'gerenciar_jogos' | 'gerenciar_usuarios') => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (req.user?.tipo !== 'administrador' || !req.user.permissoes?.includes(permission)) {
+    if (req.user?.tipo !== 'administrador') {
+      return res.status(403).json({ error: 'Acesso restrito a administradores' });
+    }
+    
+    const hasPermission = req.user.permissoes?.includes(permission) || false;
+    
+    if (!hasPermission) {
       return res.status(403).json({ error: `Permissão '${permission}' requerida` });
     }
     next();

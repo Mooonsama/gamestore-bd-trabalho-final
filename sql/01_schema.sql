@@ -22,7 +22,7 @@ CREATE TABLE usuario (
 -- Tabela administrador (especialização)
 CREATE TABLE administrador (
     cpf VARCHAR(11) PRIMARY KEY REFERENCES pessoa(cpf) ON DELETE CASCADE,
-    permissoes TEXT[] DEFAULT ARRAY['gerenciar_jogos', 'gerenciar_usuarios']
+    permissoes TEXT[]
 );
 
 -- Tabela desenvolvedora
@@ -33,15 +33,28 @@ CREATE TABLE desenvolvedora (
     CONSTRAINT check_cnpj_format CHECK (cnpj ~ '^[0-9]{14}$')
 );
 
+-- Tabela genero
+CREATE TABLE genero (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE,
+    caracteristica TEXT
+);
+
 -- Tabela jogo
 CREATE TABLE jogo (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    genero VARCHAR(50) NOT NULL,
     descricao TEXT,
     data_lancamento DATE NOT NULL,
     valor NUMERIC(10,2) NOT NULL CHECK (valor >= 0),
     id_desenvolvedora VARCHAR(14) NOT NULL REFERENCES desenvolvedora(cnpj)
+);
+
+-- Tabela de associação jogo_genero (N:N)
+CREATE TABLE jogo_genero (
+    id_jogo INTEGER REFERENCES jogo(id) ON DELETE CASCADE,
+    id_genero INTEGER REFERENCES genero(id) ON DELETE CASCADE,
+    PRIMARY KEY (id_jogo, id_genero)
 );
 
 -- Tabela cartao_bancario (entidade fraca)
@@ -91,9 +104,3 @@ CREATE TABLE gerencia (
     CONSTRAINT check_data_fim CHECK (data_fim IS NULL OR data_fim >= data_inicio)
 );
 
--- Tabela curiosidade_jogo (opcional)
-CREATE TABLE curiosidade_jogo (
-    id SERIAL PRIMARY KEY,
-    id_jogo INTEGER NOT NULL REFERENCES jogo(id) ON DELETE CASCADE,
-    texto TEXT NOT NULL
-);

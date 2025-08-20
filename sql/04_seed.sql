@@ -1,5 +1,22 @@
 -- Dados de teste para o sistema
 
+-- Inserir gêneros
+INSERT INTO genero (nome, caracteristica) VALUES
+('Battle Royale', 'Jogos de sobrevivência onde jogadores competem até restar apenas um'),
+('Ação/Aventura', 'Combina elementos de ação com exploração e narrativa'),
+('RPG', 'Role-playing games com desenvolvimento de personagem e narrativa'),
+('Ação', 'Jogos focados em combate e reflexos rápidos'),
+('FPS', 'First-person shooters com visão em primeira pessoa'),
+('FPS/VR', 'Jogos de tiro em primeira pessoa para realidade virtual'),
+('Plataforma', 'Jogos baseados em pulos e navegação por plataformas'),
+('Aventura', 'Focados em exploração e resolução de puzzles'),
+('Corrida', 'Jogos de corrida e simulação automobilística'),
+('FPS/Ação', 'Combinação de tiro em primeira pessoa com elementos de ação'),
+('Sandbox', 'Jogos de mundo aberto com liberdade criativa'),
+('Social/Dedução', 'Jogos sociais baseados em dedução e interação'),
+('Party/Battle Royale', 'Jogos de festa com elementos competitivos'),
+('Esportes/Corrida', 'Simulação esportiva com veículos');
+
 -- Inserir desenvolvedoras
 INSERT INTO desenvolvedora (cnpj, nome, nacionalidade) VALUES
 ('12345678000195', 'Epic Games', 'Estados Unidos'),
@@ -12,47 +29,90 @@ INSERT INTO desenvolvedora (cnpj, nome, nacionalidade) VALUES
 ('89012345000122', 'Microsoft Studios', 'Estados Unidos');
 
 -- Inserir jogos
-INSERT INTO jogo (nome, genero, descricao, data_lancamento, valor, id_desenvolvedora) VALUES
-('Fortnite', 'Battle Royale', 'Jogo de batalha real gratuito', '2017-07-25', 0.00, '12345678000195'),
-('Assassins Creed Valhalla', 'Ação/Aventura', 'Aventura viking na Inglaterra medieval', '2020-11-10', 299.90, '23456789000186'),
-('Cyberpunk 2077', 'RPG', 'RPG futurístico em Night City', '2020-12-10', 199.90, '34567890000177'),
-('The Witcher 3', 'RPG', 'RPG de fantasia medieval', '2015-05-19', 149.90, '34567890000177'),
-('Grand Theft Auto V', 'Ação', 'Jogo de mundo aberto em Los Santos', '2013-09-17', 89.90, '45678901000168'),
-('Red Dead Redemption 2', 'Ação/Aventura', 'Faroeste em mundo aberto', '2018-10-26', 249.90, '45678901000168'),
-('Counter-Strike 2', 'FPS', 'Jogo de tiro tático competitivo', '2023-09-27', 0.00, '56789012000159'),
-('Half-Life: Alyx', 'FPS/VR', 'Jogo de realidade virtual', '2020-03-23', 199.90, '56789012000159'),
-('Super Mario Odyssey', 'Plataforma', 'Aventura do Mario em 3D', '2017-10-27', 299.90, '67890123000140'),
-('The Legend of Zelda: Breath of the Wild', 'Aventura', 'Aventura em mundo aberto', '2017-03-03', 299.90, '67890123000140'),
-('God of War', 'Ação/Aventura', 'Aventura nórdica de Kratos', '2018-04-20', 199.90, '78901234000131'),
-('Spider-Man', 'Ação/Aventura', 'Aventura do Homem-Aranha em Nova York', '2018-09-07', 199.90, '78901234000131'),
-('Halo Infinite', 'FPS', 'Jogo de tiro em primeira pessoa', '2021-12-08', 299.90, '89012345000122'),
-('Forza Horizon 5', 'Corrida', 'Jogo de corrida em mundo aberto', '2021-11-09', 249.90, '89012345000122'),
-('Far Cry 6', 'FPS/Ação', 'Jogo de tiro em primeira pessoa', '2021-10-07', 199.90, '23456789000186'),
-('Watch Dogs: Legion', 'Ação/Aventura', 'Jogo de hackers em Londres', '2020-10-29', 179.90, '23456789000186'),
-('Minecraft', 'Sandbox', 'Jogo de construção e sobrevivência', '2011-11-18', 89.90, '89012345000122'),
-('Among Us', 'Social/Dedução', 'Jogo de dedução social', '2018-06-15', 19.90, '12345678000195'),
-('Fall Guys', 'Party/Battle Royale', 'Jogo de festa e competição', '2020-08-04', 0.00, '12345678000195'),
-('Rocket League', 'Esportes/Corrida', 'Futebol com carros', '2015-07-07', 0.00, '12345678000195');
+INSERT INTO jogo (nome, descricao, data_lancamento, valor, id_desenvolvedora) VALUES
+('Fortnite', 'Jogo de batalha real gratuito', '2017-07-25', 0.00, '12345678000195'),
+('Assassins Creed Valhalla', 'Aventura viking na Inglaterra medieval', '2020-11-10', 299.90, '23456789000186'),
+('Cyberpunk 2077', 'RPG futurístico em Night City', '2020-12-10', 199.90, '34567890000177'),
+('The Witcher 3', 'RPG de fantasia medieval', '2015-05-19', 149.90, '34567890000177'),
+('Grand Theft Auto V', 'Jogo de mundo aberto em Los Santos', '2013-09-17', 89.90, '45678901000168'),
+('Red Dead Redemption 2', 'Faroeste em mundo aberto', '2018-10-26', 249.90, '45678901000168'),
+('Counter-Strike 2', 'Jogo de tiro tático competitivo', '2023-09-27', 0.00, '56789012000159'),
+('Half-Life: Alyx', 'Jogo de realidade virtual', '2020-03-23', 199.90, '56789012000159'),
+('Super Mario Odyssey', 'Aventura do Mario em 3D', '2017-10-27', 299.90, '67890123000140'),
+('The Legend of Zelda: Breath of the Wild', 'Aventura em mundo aberto', '2017-03-03', 299.90, '67890123000140'),
+('God of War', 'Aventura nórdica de Kratos', '2018-04-20', 199.90, '78901234000131'),
+('Spider-Man', 'Aventura do Homem-Aranha em Nova York', '2018-09-07', 199.90, '78901234000131'),
+('Halo Infinite', 'Jogo de tiro em primeira pessoa', '2021-12-08', 299.90, '89012345000122'),
+('Forza Horizon 5', 'Jogo de corrida em mundo aberto', '2021-11-09', 249.90, '89012345000122'),
+('Far Cry 6', 'Jogo de tiro em primeira pessoa', '2021-10-07', 199.90, '23456789000186'),
+('Watch Dogs: Legion', 'Jogo de hackers em Londres', '2020-10-29', 179.90, '23456789000186'),
+('Minecraft', 'Jogo de construção e sobrevivência', '2011-11-18', 89.90, '89012345000122'),
+('Among Us', 'Jogo de dedução social', '2018-06-15', 19.90, '12345678000195'),
+('Fall Guys', 'Jogo de festa e competição', '2020-08-04', 0.00, '12345678000195'),
+('Rocket League', 'Futebol com carros', '2015-07-07', 0.00, '12345678000195');
+
+-- Inserir associações jogo-gênero (N:N)
+INSERT INTO jogo_genero (id_jogo, id_genero) VALUES
+-- Fortnite: Battle Royale
+(1, 1),
+-- Assassins Creed Valhalla: Ação/Aventura
+(2, 2),
+-- Cyberpunk 2077: RPG + Ação
+(3, 3), (3, 4),
+-- The Witcher 3: RPG + Aventura
+(4, 3), (4, 8),
+-- Grand Theft Auto V: Ação
+(5, 4),
+-- Red Dead Redemption 2: Ação/Aventura
+(6, 2),
+-- Counter-Strike 2: FPS
+(7, 5),
+-- Half-Life: Alyx: FPS/VR + Aventura
+(8, 6), (8, 8),
+-- Super Mario Odyssey: Plataforma + Aventura
+(9, 7), (9, 8),
+-- Zelda BOTW: Aventura + RPG
+(10, 8), (10, 3),
+-- God of War: Ação/Aventura
+(11, 2),
+-- Spider-Man: Ação/Aventura
+(12, 2),
+-- Halo Infinite: FPS + Ação
+(13, 5), (13, 4),
+-- Forza Horizon 5: Corrida
+(14, 9),
+-- Far Cry 6: FPS/Ação
+(15, 10),
+-- Watch Dogs Legion: Ação/Aventura
+(16, 2),
+-- Minecraft: Sandbox + Aventura
+(17, 11), (17, 8),
+-- Among Us: Social/Dedução
+(18, 12),
+-- Fall Guys: Party/Battle Royale
+(19, 13),
+-- Rocket League: Esportes/Corrida
+(20, 14);
 
 -- Inserir pessoas (usuários e administradores)
 INSERT INTO pessoa (cpf, nome, email, telefone, data_nascimento, rede_social, senha_hash) VALUES
 -- Usuários
-('12345678901', 'Ana Silva', 'ana.silva@email.com', '11987654321', '1995-03-15', '@ana_silva', '$2b$10$hash1'),
-('23456789012', 'Bruno Santos', 'bruno.santos@email.com', '11876543210', '1992-07-22', '@bruno_santos', '$2b$10$hash2'),
-('34567890123', 'Carla Oliveira', 'carla.oliveira@email.com', '11765432109', '1988-11-08', '@carla_oliveira', '$2b$10$hash3'),
-('45678901234', 'Diego Costa', 'diego.costa@email.com', '11654321098', '1990-05-30', '@diego_costa', '$2b$10$hash4'),
-('56789012345', 'Elena Rodrigues', 'elena.rodrigues@email.com', '11543210987', '1993-09-12', '@elena_rodrigues', '$2b$10$hash5'),
-('67890123456', 'Felipe Lima', 'felipe.lima@email.com', '11432109876', '1987-01-25', '@felipe_lima', '$2b$10$hash6'),
-('78901234567', 'Gabriela Ferreira', 'gabriela.ferreira@email.com', '11321098765', '1991-12-03', '@gabriela_ferreira', '$2b$10$hash7'),
-('89012345678', 'Henrique Alves', 'henrique.alves@email.com', '11210987654', '1989-04-18', '@henrique_alves', '$2b$10$hash8'),
-('90123456789', 'Isabela Martins', 'isabela.martins@email.com', '11109876543', '1994-08-07', '@isabela_martins', '$2b$10$hash9'),
-('01234567890', 'João Pereira', 'joao.pereira@email.com', '11098765432', '1986-06-14', '@joao_pereira', '$2b$10$hash10'),
-('11234567890', 'Karen Souza', 'karen.souza@email.com', '11987654322', '1992-10-20', '@karen_souza', '$2b$10$hash11'),
-('21234567890', 'Lucas Barbosa', 'lucas.barbosa@email.com', '11876543211', '1990-02-28', '@lucas_barbosa', '$2b$10$hash12'),
+('12345678901', 'Ana Silva', 'ana.silva@email.com', '11987654321', '1995-03-15', '@ana_silva', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('23456789012', 'Bruno Santos', 'bruno.santos@email.com', '11876543210', '1992-07-22', '@bruno_santos', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('34567890123', 'Carla Oliveira', 'carla.oliveira@email.com', '11765432109', '1988-11-08', '@carla_oliveira', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('45678901234', 'Diego Costa', 'diego.costa@email.com', '11654321098', '1990-05-30', '@diego_costa', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('56789012345', 'Elena Rodrigues', 'elena.rodrigues@email.com', '11543210987', '1993-09-12', '@elena_rodrigues', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('67890123456', 'Felipe Lima', 'felipe.lima@email.com', '11432109876', '1987-01-25', '@felipe_lima', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('78901234567', 'Gabriela Ferreira', 'gabriela.ferreira@email.com', '11321098765', '1991-12-03', '@gabriela_ferreira', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('89012345678', 'Henrique Alves', 'henrique.alves@email.com', '11210987654', '1989-04-18', '@henrique_alves', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('90123456789', 'Isabela Martins', 'isabela.martins@email.com', '11109876543', '1994-08-07', '@isabela_martins', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('01234567890', 'João Pereira', 'joao.pereira@email.com', '11098765432', '1986-06-14', '@joao_pereira', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('11234567890', 'Karen Souza', 'karen.souza@email.com', '11987654322', '1992-10-20', '@karen_souza', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
+('21234567890', 'Lucas Barbosa', 'lucas.barbosa@email.com', '11876543211', '1990-02-28', '@lucas_barbosa', '$2a$10$HQT.F9l5KxmRe9ZT9C5O/eOK2ZLM6w47eQNv.PRb2W8tGI0sS4wuW'),
 -- Administradores
-('98765432100', 'Admin Master', 'admin.master@gamestore.com', '11555666777', '1985-01-01', '@admin_master', '$2b$10$admin_hash1'),
-('87654321099', 'Admin Jogos', 'admin.jogos@gamestore.com', '11444555666', '1987-05-15', '@admin_jogos', '$2b$10$admin_hash2'),
-('76543210988', 'Admin Users', 'admin.users@gamestore.com', '11333444555', '1989-09-30', '@admin_users', '$2b$10$admin_hash3');
+('98765432100', 'Admin Master', 'admin.master@gamestore.com', '11555666777', '1985-01-01', '@admin_master', '$2a$10$tl9f..kC1TvA9xx6OaP4je2/UygMBeLIdz/73N1xPbhHZL1Qetrmq'),
+('87654321099', 'Admin Jogos', 'admin.jogos@gamestore.com', '11444555666', '1987-05-15', '@admin_jogos', '$2a$10$tl9f..kC1TvA9xx6OaP4je2/UygMBeLIdz/73N1xPbhHZL1Qetrmq'),
+('76543210988', 'Admin Users', 'admin.users@gamestore.com', '11333444555', '1989-09-30', '@admin_users', '$2a$10$tl9f..kC1TvA9xx6OaP4je2/UygMBeLIdz/73N1xPbhHZL1Qetrmq');
 
 -- Inserir usuários
 INSERT INTO usuario (cpf) VALUES
@@ -62,9 +122,9 @@ INSERT INTO usuario (cpf) VALUES
 
 -- Inserir administradores
 INSERT INTO administrador (cpf, permissoes) VALUES
-('98765432100', ARRAY['gerenciar_jogos', 'gerenciar_usuarios', 'gerenciar_desenvolvedoras', 'admin_total']),
-('87654321099', ARRAY['gerenciar_jogos', 'gerenciar_desenvolvedoras']),
-('76543210988', ARRAY['gerenciar_usuarios']);
+('98765432100', ARRAY['gerenciar_jogos', 'gerenciar_usuarios', 'visualizar_relatorios']),   -- Admin Master: todas as permissões
+('87654321099', ARRAY['gerenciar_jogos']),  -- Admin Jogos: apenas jogos
+('76543210988', ARRAY['gerenciar_usuarios']);  -- Admin Users: apenas usuários
 
 -- Inserir cartões bancários
 INSERT INTO cartao_bancario (id_usuario, numero, bandeira, validade_mes, validade_ano, codigo_seguranca) VALUES
@@ -181,25 +241,3 @@ INSERT INTO gerencia (id_admin, id_jogo, data_inicio, data_fim) VALUES
 ('98765432100', 14, '2023-03-01', '2023-05-31'),
 ('87654321099', 15, '2023-04-01', NULL);
 
--- Inserir curiosidades dos jogos
-INSERT INTO curiosidade_jogo (id_jogo, texto) VALUES
-(1, 'Fortnite foi originalmente um jogo de tower defense antes de se tornar battle royale'),
-(2, 'Assassins Creed Valhalla tem mais de 100 horas de conteúdo principal'),
-(3, 'Cyberpunk 2077 foi desenvolvido por 8 anos'),
-(4, 'The Witcher 3 tem mais de 200 horas de gameplay incluindo DLCs'),
-(5, 'GTA V é um dos jogos mais lucrativos da história'),
-(6, 'Red Dead Redemption 2 tem um dos mundos mais detalhados já criados'),
-(7, 'Counter-Strike começou como um mod de Half-Life'),
-(8, 'Half-Life: Alyx foi o primeiro jogo Half-Life em 13 anos'),
-(9, 'Super Mario Odyssey permite que Mario possua mais de 50 tipos de inimigos'),
-(10, 'Zelda BOTW quebrou muitas convenções da série'),
-(11, 'God of War (2018) foi reiniciado completamente da série original'),
-(12, 'Spider-Man PS4 tem o melhor sistema de movimentação web-swinging'),
-(13, 'Halo Infinite voltou às raízes da série original'),
-(14, 'Forza Horizon 5 tem o maior mapa da série'),
-(15, 'Far Cry 6 se passa em uma ilha inspirada em Cuba'),
-(16, 'Watch Dogs Legion permite jogar com qualquer NPC'),
-(17, 'Minecraft é o jogo mais vendido de todos os tempos'),
-(18, 'Among Us foi lançado em 2018 mas só ficou popular em 2020'),
-(19, 'Fall Guys teve 100 milhões de jogadores em seu pico'),
-(20, 'Rocket League combina futebol com carros de forma única');

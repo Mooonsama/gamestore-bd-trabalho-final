@@ -5,18 +5,20 @@ CREATE VIEW jogo_com_media AS
 SELECT 
     j.id,
     j.nome,
-    j.genero,
+    STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
     j.descricao,
     j.data_lancamento,
     j.valor,
     j.id_desenvolvedora,
     d.nome as nome_desenvolvedora,
     COALESCE(ROUND(AVG(a.nota::numeric), 2), 0) as media_avaliacao,
-    COUNT(a.nota) as total_avaliacoes
+    COUNT(DISTINCT a.id_usuario) as total_avaliacoes
 FROM jogo j
+LEFT JOIN jogo_genero jg ON j.id = jg.id_jogo
+LEFT JOIN genero g ON jg.id_genero = g.id
 LEFT JOIN avaliacao a ON j.id = a.id_jogo
 LEFT JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj
-GROUP BY j.id, j.nome, j.genero, j.descricao, j.data_lancamento, j.valor, j.id_desenvolvedora, d.nome;
+GROUP BY j.id, j.nome, j.descricao, j.data_lancamento, j.valor, j.id_desenvolvedora, d.nome;
 
 -- View para estatísticas de usuários
 CREATE VIEW usuario_estatisticas AS
@@ -39,13 +41,15 @@ CREATE VIEW jogos_mais_vendidos AS
 SELECT 
     j.id,
     j.nome,
-    j.genero,
+    STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
     j.valor,
     COUNT(c.id_jogo) as total_vendas,
     SUM(c.valor_pago) as receita_total
 FROM jogo j
+LEFT JOIN jogo_genero jg ON j.id = jg.id_jogo
+LEFT JOIN genero g ON jg.id_genero = g.id
 LEFT JOIN compra c ON j.id = c.id_jogo
-GROUP BY j.id, j.nome, j.genero, j.valor
+GROUP BY j.id, j.nome, j.valor
 ORDER BY total_vendas DESC, receita_total DESC;
 
 -- View para desenvolvedoras com estatísticas

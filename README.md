@@ -42,7 +42,7 @@ No sistema, existem **usuários comuns** e **administradores**.
 |                     | senha_hash           | TEXT         |    |    | Senha criptografada |
 | **usuario**         | cpf                  | VARCHAR(11)  | ✔  | FK | Especialização de pessoa |
 | **administrador**   | cpf                  | VARCHAR(11)  | ✔  | FK | Especialização de pessoa |
-|                     | permissoes           | TEXT[]       |    |    | Lista de permissões |
+|                     | permissoes           | TEXT         |    |    | Lista de permissões |
 | **desenvolvedora**  | cnpj                 | VARCHAR(14)  | ✔  |    | Identificador único |
 |                     | nome                 | TEXT         |    |    | Nome da desenvolvedora |
 |                     | nacionalidade        | TEXT         |    |    | País de origem |
@@ -50,9 +50,9 @@ No sistema, existem **usuários comuns** e **administradores**.
 |                     | nome                 | TEXT         |    |    | Nome do jogo |
 |                     | genero               | TEXT         |    |    | Categoria |
 |                     | descricao            | TEXT         |    |    | Sinopse |
-|                     | data_lancamento      | DATE         |    |    | Data oficial |
-|                     | valor                | NUMERIC(10,2)|    |    | Preço |
 |                     | id_desenvolvedora    | VARCHAR(14)  |    | FK | Desenvolvedora |
+| **genero**          | nome                 | TEXT         | ✔  |    | Nome do gênero |
+|                     | caracteristica       | TEXT         |    |    | Descrição do gênero |
 | **cartao_bancario** | id_usuario           | VARCHAR(11)  | ✔  | FK | Dono do cartão |
 |                     | numero               | TEXT         | ✔  |    | Número do cartão |
 |                     | bandeira             | TEXT         |    |    | Visa, Master etc |
@@ -61,20 +61,25 @@ No sistema, existem **usuários comuns** e **administradores**.
 |                     | codigo_seguranca     | INT          |    |    | CVV |
 | **compra**          | id_usuario           | VARCHAR(11)  | ✔  | FK | Usuário comprador |
 |                     | id_jogo              | INT          | ✔  | FK | Jogo comprado |
-|                     | data_compra          | TIMESTAMP    | ✔  |    | Data e hora |
+|                     | data_compra          | TIMESTAMP    |    |    | Data e hora |
 |                     | valor_pago           | NUMERIC(10,2)|    |    | Valor da compra |
-| **avaliacao**       | id_usuario           | VARCHAR(11)  | ✔  | FK | Usuário avaliador |
+| **avalia**          | id_usuario           | VARCHAR(11)  | ✔  | FK | Usuário avaliador |
 |                     | id_jogo              | INT          | ✔  | FK | Jogo avaliado |
 |                     | nota                 | INT          |    |    | 0 a 10 |
 |                     | texto                | TEXT         |    |    | Comentário |
 |                     | data_publicacao      | DATE         |    |    | Data da avaliação |
 | **gerencia**        | id_admin             | VARCHAR(11)  | ✔  | FK | Admin responsável |
 |                     | id_jogo              | INT          | ✔  | FK | Jogo |
-|                     | data_inicio          | DATE         | ✔  |    | Início da gestão |
+|                     | data_inicio          | DATE         |    |    | Início da gestão |
 |                     | data_fim             | DATE         |    |    | Fim da gestão |
-| **curiosidade_jogo**| id                   | SERIAL       | ✔  |    | Identificador |
-|                     | id_jogo              | INT          |    | FK | Jogo |
-|                     | texto                | TEXT         |    |    | Curiosidade |
+| **cria**            | cnpj                 | VARCHAR(14)  | ✔  | FK | Desenvolvedora |
+|                     | id_jogo              | INT          | ✔  | FK | Jogo |
+|                     | data_lancamento      | DATE         |    |    | Data oficial |
+|                     | valor                | NUMERIC(10,2)|    |    | Preço |
+| **contrata**        | cnpj                 | VARCHAR(14)  | ✔  | FK | Desenvolvedora |
+|                     | id_admin             | INT          | ✔  | FK | Admin responsável |
+
+
 
 ---
 
@@ -101,6 +106,9 @@ O esquema físico completo está nos arquivos:
 - `sql/02_constraints_indices_triggers.sql` → constraints, índices, triggers  
 - `sql/03_views.sql` → views  
 - `sql/04_seed.sql` → dados de teste  
+- `sql/05_queries_algebra.sql` → consultas demonstrativas  
+- `CONSULTAS_EXEMPLO.md` → exemplos de consultas SQL  
+- `insomnia_collection.json` → coleção para testes da API  
 
 ---
 
@@ -285,6 +293,15 @@ Este comando irá:
   - **Email**: `admin.users@gamestore.com` | **Senha**: `admin123` (gerenciar usuários)
 
 ## 📝 Notas de Implementação
+
+### Estrutura do Projeto
+
+- `api/` → Backend Node.js com Express e Prisma
+- `web/` → Frontend Next.js com TypeScript
+- `sql/` → Scripts SQL do banco de dados
+- `docker-compose.yml` → Orquestração dos serviços
+- `insomnia_collection.json` → Coleção para testes da API
+- `CONSULTAS_EXEMPLO.md` → Exemplos de consultas SQL
 
 ### Decisões Técnicas
 

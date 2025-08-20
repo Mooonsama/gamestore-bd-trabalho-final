@@ -53,20 +53,40 @@ model Desenvolvedora {
   @@map("desenvolvedora")
 }
 
+model Genero {
+  id            Int    @id @default(autoincrement())
+  nome          String @unique @db.VarChar(50)
+  caracteristica String?
+  
+  jogos JogoGenero[]
+
+  @@map("genero")
+}
+
+model JogoGenero {
+  id_jogo   Int
+  id_genero Int
+  
+  jogo   Jogo   @relation(fields: [id_jogo], references: [id], onDelete: Cascade)
+  genero Genero @relation(fields: [id_genero], references: [id], onDelete: Cascade)
+
+  @@id([id_jogo, id_genero])
+  @@map("jogo_genero")
+}
+
 model Jogo {
   id                Int      @id @default(autoincrement())
   nome              String   @db.VarChar(100)
-  genero            String   @db.VarChar(50)
   descricao         String?
   data_lancamento   DateTime @db.Date
   valor             Decimal  @db.Decimal(10, 2)
   id_desenvolvedora String   @db.VarChar(14)
   
   desenvolvedora    Desenvolvedora    @relation(fields: [id_desenvolvedora], references: [cnpj])
+  generos           JogoGenero[]
   compras           Compra[]
   avaliacoes        Avaliacao[]
   gerencias         Gerencia[]
-  curiosidades      CuriosidadeJogo[]
 
   @@map("jogo")
 }
@@ -125,12 +145,3 @@ model Gerencia {
   @@map("gerencia")
 }
 
-model CuriosidadeJogo {
-  id      Int    @id @default(autoincrement())
-  id_jogo Int
-  texto   String
-  
-  jogo Jogo @relation(fields: [id_jogo], references: [id], onDelete: Cascade)
-
-  @@map("curiosidade_jogo")
-}
