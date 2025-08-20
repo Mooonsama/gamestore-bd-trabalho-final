@@ -80,7 +80,7 @@ No sistema, existem **usuários comuns** e **administradores**.
 |                     | id_admin             | INT          | ✔  | FK | Admin responsável |
 | **possui**          | id_usuario           | VARCHAR(11)  | ✔  | FK | Usuario que possui |
 |                     | numero               | INT          | ✔  | FK | Número do cartão |
-| **tem**             | id_jogo              | VARCHAR(14)  | ✔  | FK | Jogo |
+| **tem**             | id_jogo              | VARCHAR(14)  | ✔  | FK | Jogos do gênero |
 |                     | nome                 | TEXT         | ✔  | FK | Nome do gênero |
 
 
