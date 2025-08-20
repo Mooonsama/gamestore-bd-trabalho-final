@@ -38,12 +38,17 @@ export default function Home() {
   };
 
   const jogosFiltrados = jogos.filter(jogo => {
-    const matchGenero = !filtroGenero || jogo.genero === filtroGenero;
+    const matchGenero = !filtroGenero || jogo.genero.includes(filtroGenero);
     const matchNome = !busca || jogo.nome.toLowerCase().includes(busca.toLowerCase());
     return matchGenero && matchNome;
   });
 
-  const generos = Array.from(new Set(jogos.map(jogo => jogo.genero)));
+  // Extrair todos os gêneros únicos dos jogos
+  const generos = Array.from(new Set(
+    jogos.flatMap(jogo => 
+      jogo.genero.split(', ').map(g => g.trim())
+    )
+  )).sort();
 
   if (loading) {
     return (

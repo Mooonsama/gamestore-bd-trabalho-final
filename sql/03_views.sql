@@ -5,7 +5,7 @@ CREATE VIEW jogo_com_media AS
 SELECT 
     j.id,
     j.nome,
-    STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
+    STRING_AGG(DISTINCT g.nome, ', ' ORDER BY g.nome) as genero,
     j.descricao,
     j.data_lancamento,
     j.valor,
@@ -41,7 +41,7 @@ CREATE VIEW jogos_mais_vendidos AS
 SELECT 
     j.id,
     j.nome,
-    STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
+    STRING_AGG(DISTINCT g.nome, ', ' ORDER BY g.nome) as genero,
     j.valor,
     COUNT(c.id_jogo) as total_vendas,
     SUM(c.valor_pago) as receita_total

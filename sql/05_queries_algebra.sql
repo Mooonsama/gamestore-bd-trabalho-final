@@ -67,10 +67,12 @@ WHERE j.id IN (
     SELECT a.id_jogo FROM avaliacao a WHERE a.id_usuario = '12345678901'
 );
 
--- 9. SUBCONSULTA com EXISTS - Jogos com pelo menos 5 avaliações >= 9
--- σ(EXISTS(σ(nota >= 9 AND COUNT(*) >= 5)(avaliacao)))(jogo)
-SELECT j.nome, j.genero
+-- 9. SUBCONSULTA com EXISTS - Jogos com pelo menos 2 avaliações >= 9
+-- σ(EXISTS(σ(nota >= 9 AND COUNT(*) >= 2)(avaliacao)))(jogo)
+SELECT j.nome, STRING_AGG(g.nome, ', ') as generos
 FROM jogo j
+LEFT JOIN jogo_genero jg ON j.id = jg.id_jogo
+LEFT JOIN genero g ON jg.id_genero = g.id
 WHERE EXISTS (
     SELECT 1
     FROM avaliacao a
@@ -78,7 +80,8 @@ WHERE EXISTS (
     AND a.nota >= 9
     GROUP BY a.id_jogo
     HAVING COUNT(*) >= 2  -- Ajustado para 2 pois temos poucos dados
-);
+)
+GROUP BY j.id, j.nome;
 
 -- 10. DIVISÃO RELACIONAL - Usuários que compraram TODOS os jogos de uma desenvolvedora específica
 -- Usuários que compraram todos os jogos da CD Projekt (CNPJ: 34567890000177)

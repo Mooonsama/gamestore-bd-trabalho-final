@@ -7,7 +7,7 @@ export class JogoService {
       SELECT 
         j.id,
         j.nome,
-        STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
+        STRING_AGG(DISTINCT g.nome, ', ' ORDER BY g.nome) as genero,
         j.descricao,
         j.data_lancamento,
         j.valor::float as valor,
@@ -31,7 +31,7 @@ export class JogoService {
       SELECT 
         j.id,
         j.nome,
-        STRING_AGG(g.nome, ', ' ORDER BY g.nome) as genero,
+        STRING_AGG(DISTINCT g.nome, ', ' ORDER BY g.nome) as genero,
         j.descricao,
         j.data_lancamento,
         j.valor::float as valor,
