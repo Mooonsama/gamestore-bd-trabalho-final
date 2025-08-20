@@ -89,12 +89,14 @@ No sistema, existem **usuários comuns** e **administradores**.
 - usuario(`cpf` FK→pessoa)  
 - administrador(`cpf` FK→pessoa, permissoes)  
 - desenvolvedora(`cnpj`, nome, nacionalidade)  
-- jogo(`id`, nome, genero, descricao, data_lancamento, valor, id_desenvolvedora FK→desenvolvedora)  
+- jogo(`id`, nome, genero, descricao, data_lancamento, valor, id_desenvolvedora FK→desenvolvedora)
+- genero(`nome`, caracteristica)
 - cartao_bancario(`id_usuario` FK→usuario, `numero`, bandeira, validade_mes, validade_ano, codigo_seguranca)  
 - compra(`id_usuario` FK→usuario, `id_jogo` FK→jogo, data_compra, valor_pago)  
 - avaliacao(`id_usuario` FK→usuario, `id_jogo` FK→jogo, nota, texto, data_publicacao)  
 - gerencia(`id_admin` FK→administrador, `id_jogo` FK→jogo, data_inicio, data_fim)  
-- curiosidade_jogo(`id`, `id_jogo` FK→jogo, texto)  
+- cria(`cnpj`, `id_jogo`, data_lancamento, valor)
+- contrata(`cnpj`, `id_admin`)
 
 ---
 
