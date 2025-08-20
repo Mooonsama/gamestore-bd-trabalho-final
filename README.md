@@ -7,7 +7,7 @@ O sistema foi construído a partir do **modelo ERE corrigido do TP1** e entregue
 
 ## 📖 Mini Mundo
 
-![Modelo Mini Mundo](diagrama_BD_NOVO(4).xml)
+![Modelo Mini Mundo](diagrama_BD.png)
 
 A **GameStore** é uma plataforma digital de venda de jogos eletrônicos.  
 No sistema, existem **usuários comuns** e **administradores**.  
