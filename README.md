@@ -54,7 +54,7 @@ No sistema, existem **usuários comuns** e **administradores**.
 | **genero**          | nome                 | TEXT         | ✔  |    | Nome do gênero |
 |                     | caracteristica       | TEXT         |    |    | Descrição do gênero |
 | **cartao_bancario** | id_usuario           | VARCHAR(11)  | ✔  | FK | Dono do cartão |
-|                     | numero               | TEXT         | ✔  |    | Número do cartão |
+|                     | numero               | INT          | ✔  |    | Número do cartão |
 |                     | bandeira             | TEXT         |    |    | Visa, Master etc |
 |                     | validade_mes         | INT          |    |    | Mês de expiração |
 |                     | validade_ano         | INT          |    |    | Ano de expiração |
@@ -78,6 +78,10 @@ No sistema, existem **usuários comuns** e **administradores**.
 |                     | valor                | NUMERIC(10,2)|    |    | Preço |
 | **contrata**        | cnpj                 | VARCHAR(14)  | ✔  | FK | Desenvolvedora |
 |                     | id_admin             | INT          | ✔  | FK | Admin responsável |
+| **possui**          | id_usuario           | VARCHAR(11)  | ✔  | FK | Usuario que possui |
+|                     | numero               | INT          | ✔  | FK | Número do cartão |
+| **tem**             | id_jogo              | VARCHAR(14)  | ✔  | FK | Jogo |
+|                     | nome                 | TEXT         | ✔  | FK | Nome do gênero |
 
 
 
