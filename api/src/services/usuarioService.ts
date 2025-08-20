@@ -12,6 +12,18 @@ export class UsuarioService {
       throw new Error('Jogo não encontrado');
     }
 
+    // Verificar se usuário já possui o jogo
+    const compraExistente = await prisma.compra.findFirst({
+      where: {
+        id_usuario: userId,
+        id_jogo: data.id_jogo,
+      },
+    });
+
+    if (compraExistente) {
+      throw new Error('Você já possui este jogo');
+    }
+
     // Verificar se a data de lançamento já passou
     if (jogo.data_lancamento > new Date()) {
       throw new Error('Não é possível comprar jogo antes da data de lançamento');
@@ -139,5 +151,15 @@ export class UsuarioService {
         // Não retornar código de segurança por segurança
       },
     });
+  }
+
+  async checkCompra(userId: string, jogoId: number) {
+    const compra = await prisma.compra.findFirst({
+      where: {
+        id_usuario: userId,
+        id_jogo: jogoId,
+      },
+    });
+    return !!compra;
   }
 }

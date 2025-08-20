@@ -12,6 +12,7 @@ export default function Home() {
   const [jogos, setJogos] = useState<Jogo[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtroGenero, setFiltroGenero] = useState('');
+  const [busca, setBusca] = useState('');
   const [descricaoExpandida, setDescricaoExpandida] = useState<{ [key: number]: boolean }>({});
 
   const toggleDescricao = (id: number) => {
@@ -36,9 +37,11 @@ export default function Home() {
     }
   };
 
-  const jogosFiltrados = filtroGenero
-    ? jogos.filter(jogo => jogo.genero === filtroGenero)
-    : jogos;
+  const jogosFiltrados = jogos.filter(jogo => {
+    const matchGenero = !filtroGenero || jogo.genero === filtroGenero;
+    const matchNome = !busca || jogo.nome.toLowerCase().includes(busca.toLowerCase());
+    return matchGenero && matchNome;
+  });
 
   const generos = Array.from(new Set(jogos.map(jogo => jogo.genero)));
 
@@ -58,8 +61,15 @@ export default function Home() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Catálogo de Jogos</h1>
           
-          {/* Filtro por gênero */}
-          <div className="mb-6">
+          {/* Busca e filtros */}
+          <div className="mb-6 flex flex-col sm:flex-row gap-4">
+            <input
+              type="text"
+              placeholder="Buscar jogos por nome..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             <select
               value={filtroGenero}
               onChange={(e) => setFiltroGenero(e.target.value)}
@@ -150,7 +160,11 @@ export default function Home() {
 
           {jogosFiltrados.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">Nenhum jogo encontrado.</p>
+              <p className="text-gray-500">
+                {busca || filtroGenero 
+                  ? 'Nenhum jogo encontrado com os filtros aplicados.' 
+                  : 'Nenhum jogo encontrado.'}
+              </p>
             </div>
           )}
         </div>

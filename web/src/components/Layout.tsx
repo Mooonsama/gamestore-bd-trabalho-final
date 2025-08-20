@@ -61,12 +61,20 @@ export default function Layout({ children }: LayoutProps) {
                   </button>
                 </div>
               ) : (
-                <Link
-                  href="/login"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
-                >
-                  Entrar
-                </Link>
+                <div className="flex items-center space-x-2">
+                  <Link
+                    href="/registro"
+                    className="text-blue-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium border border-blue-600 hover:border-blue-700"
+                  >
+                    Criar Conta
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+                  >
+                    Entrar
+                  </Link>
+                </div>
               )}
             </div>
           </div>

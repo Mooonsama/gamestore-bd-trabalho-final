@@ -86,3 +86,25 @@ CREATE TRIGGER trigger_check_avaliacao_compra
     BEFORE INSERT OR UPDATE ON avaliacao
     FOR EACH ROW
     EXECUTE FUNCTION check_avaliacao_compra();
+
+-- Trigger para impedir compras duplicadas do mesmo jogo
+CREATE OR REPLACE FUNCTION check_compra_duplicada()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM compra c
+        WHERE c.id_usuario = NEW.id_usuario
+        AND c.id_jogo = NEW.id_jogo
+        AND (c.id_usuario, c.id_jogo, c.data_compra) != (NEW.id_usuario, NEW.id_jogo, NEW.data_compra)
+    ) THEN
+        RAISE EXCEPTION 'Usuário já possui este jogo';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_check_compra_duplicada
+    BEFORE INSERT ON compra
+    FOR EACH ROW
+    EXECUTE FUNCTION check_compra_duplicada();

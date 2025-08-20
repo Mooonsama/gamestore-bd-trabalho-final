@@ -19,13 +19,17 @@ export default function JogoDetalhes() {
   const [avaliando, setAvaliando] = useState(false);
   const [nota, setNota] = useState(10);
   const [texto, setTexto] = useState('');
+  const [jaComprou, setJaComprou] = useState(false);
 
   useEffect(() => {
     if (params.id) {
       fetchJogo();
       fetchAvaliacoes();
+      if (isAuthenticated && user?.tipo === 'usuario') {
+        checkCompra();
+      }
     }
-  }, [params.id]);
+  }, [params.id, isAuthenticated, user]);
 
   const fetchJogo = async () => {
     try {
@@ -47,6 +51,16 @@ export default function JogoDetalhes() {
     }
   };
 
+  const checkCompra = async () => {
+    if (!user) return;
+    try {
+      const response = await api.get(`/usuarios/${user.cpf}/compras/${params.id}`);
+      setJaComprou(response.data.jaComprou);
+    } catch (error) {
+      console.error('Erro ao verificar compra');
+    }
+  };
+
   const handleCompra = async () => {
     if (!isAuthenticated || !user || !jogo) return;
 
@@ -56,6 +70,7 @@ export default function JogoDetalhes() {
         id_jogo: jogo.id,
         valor_pago: jogo.valor,
       });
+      setJaComprou(true);
       toast.success('Compra realizada com sucesso!');
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Erro ao realizar compra');
@@ -77,6 +92,7 @@ export default function JogoDetalhes() {
       toast.success('Avaliação enviada com sucesso!');
       setTexto('');
       fetchAvaliacoes();
+      checkCompra();
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Erro ao enviar avaliação');
     } finally {
@@ -162,7 +178,7 @@ export default function JogoDetalhes() {
                 )}
 
                 {/* Botão de compra */}
-                {isAuthenticated && user?.tipo === 'usuario' && (
+                {isAuthenticated && user?.tipo === 'usuario' && !jaComprou && (
                   <div className="mt-8">
                     <button
                       onClick={handleCompra}
@@ -172,6 +188,15 @@ export default function JogoDetalhes() {
                       <ShoppingCart className="w-5 h-5 mr-2" />
                       {comprando ? 'Comprando...' : 'Comprar Jogo'}
                     </button>
+                  </div>
+                )}
+                
+                {/* Mensagem se já comprou */}
+                {isAuthenticated && user?.tipo === 'usuario' && jaComprou && (
+                  <div className="mt-8">
+                    <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                      ✓ Você já possui este jogo
+                    </div>
                   </div>
                 )}
               </div>
@@ -191,7 +216,7 @@ export default function JogoDetalhes() {
                         max="10"
                         value={nota}
                         onChange={(e) => setNota(parseInt(e.target.value))}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-black"
                       />
                     </div>
                     <div>

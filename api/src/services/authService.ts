@@ -59,6 +59,53 @@ export class AuthService {
     };
   }
 
+  async registro(data: any) {
+    // Verificar se CPF já existe
+    const existingPessoa = await prisma.pessoa.findUnique({
+      where: { cpf: data.cpf }
+    });
+    
+    if (existingPessoa) {
+      throw new Error('CPF já cadastrado');
+    }
+
+    // Verificar se email já existe
+    const existingEmail = await prisma.pessoa.findUnique({
+      where: { email: data.email }
+    });
+    
+    if (existingEmail) {
+      throw new Error('Email já cadastrado');
+    }
+
+    const hashedPassword = await this.hashPassword(data.senha);
+    
+    // Criar pessoa e usuário em transação
+    const result = await prisma.$transaction(async (tx) => {
+      const pessoa = await tx.pessoa.create({
+        data: {
+          cpf: data.cpf,
+          nome: data.nome,
+          email: data.email,
+          telefone: data.telefone,
+          data_nascimento: new Date(data.data_nascimento),
+          rede_social: data.rede_social,
+          senha_hash: hashedPassword,
+        },
+      });
+
+      await tx.usuario.create({
+        data: {
+          cpf: data.cpf,
+        },
+      });
+
+      return pessoa;
+    });
+
+    return { message: 'Usuário criado com sucesso', cpf: result.cpf };
+  }
+
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
   }

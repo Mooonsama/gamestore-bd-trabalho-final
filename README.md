@@ -52,6 +52,110 @@ Este comando irá:
 
 Abra seu navegador e acesse: `http://localhost:3000`
 
+### 5\. Acesse o pgAdmin (Administração do Banco)
+
+- **URL**: `http://localhost:8080`
+- **Email**: `admin@gamestore.com`
+- **Senha**: `admin123`
+
+**Para conectar ao banco no pgAdmin:**
+1. Clique em "Add New Server"
+2. **General Tab**: Name = "GameStore DB"
+3. **Connection Tab**:
+   - Host: `db`
+   - Port: `5432`
+   - Database: `gamestore`
+   - Username: `postgres`
+   - Password: `postgres`
+
+### 🔍 Consultas para Testar no pgAdmin Query Tool
+
+Após conectar ao banco, use **Tools → Query Tool** e execute estas consultas:
+
+#### Consultas Básicas
+```sql
+-- Listar todos os jogos com suas desenvolvedoras
+SELECT j.nome, j.genero, j.valor, d.nome as desenvolvedora
+FROM jogo j
+JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj
+ORDER BY j.nome;
+
+-- Usuários e suas compras
+SELECT p.nome, j.nome as jogo, c.data_compra, c.valor_pago
+FROM compra c
+JOIN pessoa p ON c.id_usuario = p.cpf
+JOIN jogo j ON c.id_jogo = j.id
+ORDER BY c.data_compra DESC;
+
+-- Jogos mais bem avaliados
+SELECT j.nome, AVG(a.nota) as media_nota, COUNT(a.nota) as total_avaliacoes
+FROM jogo j
+LEFT JOIN avaliacao a ON j.id = a.id_jogo
+GROUP BY j.id, j.nome
+HAVING COUNT(a.nota) > 0
+ORDER BY AVG(a.nota) DESC;
+```
+
+#### Consultas Avançadas
+```sql
+-- Usuários que mais compraram jogos
+SELECT p.nome, COUNT(c.id_jogo) as total_compras, SUM(c.valor_pago) as total_gasto
+FROM pessoa p
+JOIN compra c ON p.cpf = c.id_usuario
+GROUP BY p.cpf, p.nome
+ORDER BY COUNT(c.id_jogo) DESC;
+
+-- Jogos por gênero e suas estatísticas
+SELECT genero, 
+       COUNT(*) as total_jogos,
+       AVG(valor) as preco_medio,
+       MIN(valor) as preco_minimo,
+       MAX(valor) as preco_maximo
+FROM jogo
+GROUP BY genero
+ORDER BY COUNT(*) DESC;
+
+-- Desenvolvedoras mais ativas
+SELECT d.nome, d.nacionalidade, COUNT(j.id) as total_jogos
+FROM desenvolvedora d
+LEFT JOIN jogo j ON d.cnpj = j.id_desenvolvedora
+GROUP BY d.cnpj, d.nome, d.nacionalidade
+ORDER BY COUNT(j.id) DESC;
+```
+
+#### Verificar Integridade dos Dados
+```sql
+-- Verificar se há avaliações sem compras (deve retornar vazio)
+SELECT a.id_usuario, a.id_jogo, p.nome, j.nome as jogo
+FROM avaliacao a
+JOIN pessoa p ON a.id_usuario = p.cpf
+JOIN jogo j ON a.id_jogo = j.id
+WHERE NOT EXISTS (
+    SELECT 1 FROM compra c 
+    WHERE c.id_usuario = a.id_usuario 
+    AND c.id_jogo = a.id_jogo
+);
+
+-- Verificar compras antes do lançamento (deve retornar vazio)
+SELECT c.*, j.nome, j.data_lancamento
+FROM compra c
+JOIN jogo j ON c.id_jogo = j.id
+WHERE DATE(c.data_compra) < j.data_lancamento;
+
+-- Contar registros por tabela
+SELECT 'pessoa' as tabela, COUNT(*) as total FROM pessoa
+UNION ALL
+SELECT 'usuario', COUNT(*) FROM usuario
+UNION ALL
+SELECT 'administrador', COUNT(*) FROM administrador
+UNION ALL
+SELECT 'jogo', COUNT(*) FROM jogo
+UNION ALL
+SELECT 'compra', COUNT(*) FROM compra
+UNION ALL
+SELECT 'avaliacao', COUNT(*) FROM avaliacao;
+```
+
 
 
 ## 👥 Usuários de Teste

@@ -53,7 +53,10 @@ export default function Login() {
             Entre na sua conta
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Acesse a GameStore
+            Acesse a GameStore ou{' '}
+            <a href="/registro" className="font-medium text-blue-600 hover:text-blue-500">
+              crie uma nova conta
+            </a>
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>

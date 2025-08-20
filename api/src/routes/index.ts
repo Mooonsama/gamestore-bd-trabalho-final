@@ -13,6 +13,7 @@ const usuarioController = new UsuarioController();
 
 // Rotas de autenticação
 router.post('/auth/login', authController.login);
+router.post('/auth/registro', authController.registro);
 
 // Rotas de jogos
 router.get('/jogos', jogoController.getAll);
@@ -28,6 +29,7 @@ router.post('/jogos/:id/avaliacoes', authenticateToken, usuarioController.create
 // Rotas de usuários
 router.post('/usuarios/:id/compras', authenticateToken, usuarioController.createCompra);
 router.get('/usuarios/:id/compras', authenticateToken, usuarioController.getCompras);
+router.get('/usuarios/:id/compras/:jogoId', authenticateToken, usuarioController.checkCompra);
 router.post('/usuarios/:id/cartoes', authenticateToken, usuarioController.createCartao);
 router.get('/usuarios/:id/cartoes', authenticateToken, usuarioController.getCartoes);
 

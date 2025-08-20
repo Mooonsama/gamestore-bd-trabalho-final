@@ -119,4 +119,20 @@ export class UsuarioController {
       res.status(500).json({ error: (error as Error).message });
     }
   };
+
+  checkCompra = async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = req.params.id;
+      const jogoId = parseInt(req.params.jogoId);
+      
+      if (req.user?.cpf !== userId && req.user?.tipo !== 'administrador') {
+        return res.status(403).json({ error: 'Não autorizado' });
+      }
+
+      const jaComprou = await this.usuarioService.checkCompra(userId, jogoId);
+      res.json({ jaComprou });
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  };
 }
