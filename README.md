@@ -1,392 +1,245 @@
-# GameStore - Sistema Completo de Loja de Jogos
+# 🎮 GameStore - Sistema Completo de Loja de Jogos
 
-Sistema completo de loja de jogos desenvolvido com **PostgreSQL**, **Node.js/TypeScript** e **Next.js**, implementando o modelo ERE corrigido do TP1.
+Projeto acadêmico da disciplina **Banco de Dados I**, implementando um **sistema de loja de jogos digitais**.  
+O sistema foi construído a partir do **modelo ERE corrigido do TP1** e entregue conforme as exigências do **TP2**.
 
+---
 
+## 📖 Mini Mundo
 
-## 🏗️ Arquitetura
+A **GameStore** é uma plataforma digital de venda de jogos eletrônicos.  
+No sistema, existem **usuários comuns** e **administradores**.  
 
-  - **Backend**: Node.js + TypeScript + Express + Prisma ORM
-  - **Frontend**: Next.js + TypeScript + Tailwind CSS
-  - **Banco de Dados**: PostgreSQL 15+
-  - **Containerização**: Docker + Docker Compose
+- Usuários podem:
+  - Cadastrar dados pessoais e cartões bancários.
+  - Comprar jogos.
+  - Avaliar os jogos adquiridos.
+  - Consultar seu histórico de compras.
 
+- Administradores podem:
+  - Cadastrar e gerenciar jogos.
+  - Gerenciar usuários.
+  - Acompanhar o desempenho das vendas.
 
+- Desenvolvedoras possuem **CNPJ** e são responsáveis pelos jogos publicados.  
+- Cada jogo possui informações de **nome, gênero, descrição, data de lançamento, valor**.  
+- Compras geram registros financeiros.  
+- Avaliações são feitas apenas após a compra.  
+- Curiosidades extras sobre jogos também podem ser cadastradas.  
 
-## 📋 Pré-requisitos
+---
 
-  - Docker e Docker Compose instalados
-  - Git (para clonar o repositório)
+## 📚 Dicionário de Dados
 
+| Entidade            | Atributo             | Tipo          | PK | FK | Descrição |
+|---------------------|----------------------|--------------|----|----|-----------|
+| **pessoa**          | cpf                  | VARCHAR(11)  | ✔  |    | Identificador único |
+|                     | nome                 | TEXT         |    |    | Nome completo |
+|                     | email                | TEXT         |    |    | E-mail válido |
+|                     | telefone             | TEXT         |    |    | Telefone |
+|                     | data_nascimento      | DATE         |    |    | Data de nascimento |
+|                     | rede_social          | TEXT         |    |    | Rede social |
+|                     | senha_hash           | TEXT         |    |    | Senha criptografada |
+| **usuario**         | cpf                  | VARCHAR(11)  | ✔  | FK | Especialização de pessoa |
+| **administrador**   | cpf                  | VARCHAR(11)  | ✔  | FK | Especialização de pessoa |
+|                     | permissoes           | TEXT[]       |    |    | Lista de permissões |
+| **desenvolvedora**  | cnpj                 | VARCHAR(14)  | ✔  |    | Identificador único |
+|                     | nome                 | TEXT         |    |    | Nome da desenvolvedora |
+|                     | nacionalidade        | TEXT         |    |    | País de origem |
+| **jogo**            | id                   | SERIAL       | ✔  |    | Identificador |
+|                     | nome                 | TEXT         |    |    | Nome do jogo |
+|                     | genero               | TEXT         |    |    | Categoria |
+|                     | descricao            | TEXT         |    |    | Sinopse |
+|                     | data_lancamento      | DATE         |    |    | Data oficial |
+|                     | valor                | NUMERIC(10,2)|    |    | Preço |
+|                     | id_desenvolvedora    | VARCHAR(14)  |    | FK | Desenvolvedora |
+| **cartao_bancario** | id_usuario           | VARCHAR(11)  | ✔  | FK | Dono do cartão |
+|                     | numero               | TEXT         | ✔  |    | Número do cartão |
+|                     | bandeira             | TEXT         |    |    | Visa, Master etc |
+|                     | validade_mes         | INT          |    |    | Mês de expiração |
+|                     | validade_ano         | INT          |    |    | Ano de expiração |
+|                     | codigo_seguranca     | INT          |    |    | CVV |
+| **compra**          | id_usuario           | VARCHAR(11)  | ✔  | FK | Usuário comprador |
+|                     | id_jogo              | INT          | ✔  | FK | Jogo comprado |
+|                     | data_compra          | TIMESTAMP    | ✔  |    | Data e hora |
+|                     | valor_pago           | NUMERIC(10,2)|    |    | Valor da compra |
+| **avaliacao**       | id_usuario           | VARCHAR(11)  | ✔  | FK | Usuário avaliador |
+|                     | id_jogo              | INT          | ✔  | FK | Jogo avaliado |
+|                     | nota                 | INT          |    |    | 0 a 10 |
+|                     | texto                | TEXT         |    |    | Comentário |
+|                     | data_publicacao      | DATE         |    |    | Data da avaliação |
+| **gerencia**        | id_admin             | VARCHAR(11)  | ✔  | FK | Admin responsável |
+|                     | id_jogo              | INT          | ✔  | FK | Jogo |
+|                     | data_inicio          | DATE         | ✔  |    | Início da gestão |
+|                     | data_fim             | DATE         |    |    | Fim da gestão |
+| **curiosidade_jogo**| id                   | SERIAL       | ✔  |    | Identificador |
+|                     | id_jogo              | INT          |    | FK | Jogo |
+|                     | texto                | TEXT         |    |    | Curiosidade |
 
+---
+
+## 🏗️ Modelo Relacional
+
+- pessoa(`cpf`, nome, email, telefone, data_nascimento, rede_social, senha_hash)  
+- usuario(`cpf` FK→pessoa)  
+- administrador(`cpf` FK→pessoa, permissoes)  
+- desenvolvedora(`cnpj`, nome, nacionalidade)  
+- jogo(`id`, nome, genero, descricao, data_lancamento, valor, id_desenvolvedora FK→desenvolvedora)  
+- cartao_bancario(`id_usuario` FK→usuario, `numero`, bandeira, validade_mes, validade_ano, codigo_seguranca)  
+- compra(`id_usuario` FK→usuario, `id_jogo` FK→jogo, data_compra, valor_pago)  
+- avaliacao(`id_usuario` FK→usuario, `id_jogo` FK→jogo, nota, texto, data_publicacao)  
+- gerencia(`id_admin` FK→administrador, `id_jogo` FK→jogo, data_inicio, data_fim)  
+- curiosidade_jogo(`id`, `id_jogo` FK→jogo, texto)  
+
+---
+
+## 💾 Esquema Físico (DDL SQL)
+
+O esquema físico completo está nos arquivos:
+
+- `sql/01_schema.sql` → tabelas  
+- `sql/02_constraints_indices_triggers.sql` → constraints, índices, triggers  
+- `sql/03_views.sql` → views  
+- `sql/04_seed.sql` → dados de teste  
+
+---
+
+## 🔍 Consultas SQL (Álgebra Relacional)
+
+O arquivo `sql/05_queries_algebra.sql` contém 15 consultas demonstrativas.  
+Abaixo, exemplos prontos para copiar:
+
+### 1. Seleção (σ) — Jogos do gênero "Ação"
+```sql
+SELECT * FROM jogo WHERE genero = 'Ação';
+```
+
+### 2. Projeção (π) — Nomes dos usuários cadastrados
+```sql
+SELECT nome FROM pessoa;
+```
+
+### 3. Junção (⨝) — Jogos e suas desenvolvedoras
+```sql
+SELECT j.nome AS jogo, d.nome AS desenvolvedora
+FROM jogo j
+JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj;
+```
+
+### 4. Agregação (GROUP BY / HAVING) — Média de avaliações por jogo
+```sql
+SELECT j.nome, AVG(a.nota) AS media
+FROM avaliacao a
+JOIN jogo j ON a.id_jogo = j.id
+GROUP BY j.nome;
+```
+
+### 5. Operação de conjunto (∪) — Jogos de ação ou aventura
+```sql
+SELECT nome FROM jogo WHERE genero = 'Ação'
+UNION
+SELECT nome FROM jogo WHERE genero = 'Aventura';
+```
+
+### 6. Subconsulta (EXISTS) — Usuários que compraram pelo menos um jogo
+```sql
+SELECT p.nome
+FROM pessoa p
+WHERE EXISTS (
+  SELECT 1 FROM compra c WHERE c.id_usuario = p.cpf
+);
+```
+
+### 7. Divisão relacional — Usuários que compraram todos os jogos de uma desenvolvedora (ex.: 'Nintendo')
+```sql
+SELECT u.cpf, p.nome
+FROM usuario u
+JOIN pessoa p ON u.cpf = p.cpf
+WHERE NOT EXISTS (
+  SELECT j.id
+  FROM jogo j
+  JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj
+  WHERE d.nome = 'Nintendo'
+  EXCEPT
+  SELECT c.id_jogo
+  FROM compra c
+  WHERE c.id_usuario = u.cpf
+);
+```
+
+### 8. Funções de janela (RANK) — Ranking dos jogos mais bem avaliados
+```sql
+SELECT j.nome, AVG(a.nota) AS media,
+       RANK() OVER (ORDER BY AVG(a.nota) DESC) AS posicao
+FROM jogo j
+JOIN avaliacao a ON j.id = a.id_jogo
+GROUP BY j.nome;
+```
+
+---
 
 ## 🚀 Como Executar
 
-### 1\. Clone o repositório
-
-```bash
-git clone <url-do-repositorio>
-cd BD\ trabalho\ final
-```
-
-### 2\. Inicie os serviços
-
+### Usando Docker Compose
 ```bash
 docker-compose up -d
 ```
 
-Este comando irá:
-
-  - Criar e inicializar o banco PostgreSQL
-  - Executar automaticamente os scripts SQL na ordem correta
-  - Construir e iniciar a API
-  - Construir e iniciar o frontend
-
-### 3\. Aguarde a inicialização
-
-  - O banco de dados será inicializado com todos os dados de teste
-  - A API estará disponível em: `http://localhost:3001`
-  - O frontend estará disponível em: `http://localhost:3000`
-
-### 4\. Acesse a aplicação
-
-Abra seu navegador e acesse: `http://localhost:3000`
-
-
-
-## 👥 Usuários de Teste
-
-### Usuários Comuns
-
-  - **Email**: `ana.silva@email.com` | **Senha**: `senha123`
-  - **Email**: `bruno.santos@email.com` | **Senha**: `senha123`
-  - **Email**: `carla.oliveira@email.com` | **Senha**: `senha123`
-
-### Administradores
-
-  - **Email**: `admin.master@gamestore.com` | **Senha**: `admin123` (todas as permissões)
-  - **Email**: `admin.jogos@gamestore.com` | **Senha**: `admin123` (gerenciar jogos)
-  - **Email**: `admin.users@gamestore.com` | **Senha**: `admin123` (gerenciar usuários)
-
-
-
-## 🗄️ Estrutura do Banco de Dados
-
-### Modelo ERE → Relacional Implementado
-
-1.  **pessoa** (supertipo)
-
-      - PK: `cpf` (VARCHAR(11))
-      - Atributos: `nome`, `email`, `telefone`, `data_nascimento`, `rede_social`, `senha_hash`
-
-2.  **usuario** (especialização)
-
-      - PK/FK: `cpf` → `pessoa.cpf`
-
-3.  **administrador** (especialização)
-
-      - PK/FK: `cpf` → `pessoa.cpf`
-      - Atributo: `permissoes` (TEXT[])
-
-4.  **desenvolvedora**
-
-      - PK: `cnpj` (VARCHAR(14))
-      - Atributos: `nome`, `nacionalidade`
-
-5.  **jogo**
-
-      - PK: `id` (SERIAL)
-      - FK: `id_desenvolvedora` → `desenvolvedora.cnpj`
-      - Atributos: `nome`, `genero`, `descricao`, `data_lancamento`, `valor`
-
-6.  **cartao\_bancario** (entidade fraca)
-
-      - PK composta: (`id_usuario`, `numero`)
-      - FK: `id_usuario` → `usuario.cpf`
-      - Atributos: `bandeira`, `validade_mes`, `validade_ano`, `codigo_seguranca`
-
-7.  **compra** (relação N:N)
-
-      - PK: (`id_usuario`, `id_jogo`, `data_compra`)
-      - FKs: `id_usuario` → `usuario.cpf`, `id_jogo` → `jogo.id`
-      - Atributo: `valor_pago`
-
-8.  **avaliacao**
-
-      - PK: (`id_usuario`, `id_jogo`)
-      - FKs: `id_usuario` → `usuario.cpf`, `id_jogo` → `jogo.id`
-      - Atributos: `nota` (0-10), `texto`, `data_publicacao`
-
-9.  **gerencia**
-
-      - PK: (`id_admin`, `id_jogo`, `data_inicio`)
-      - FKs: `id_admin` → `administrador.cpf`, `id_jogo` → `jogo.id`
-      - Atributos: `data_fim`
-
-10. **curiosidade\_jogo**
-
-      - PK: `id` (SERIAL)
-      - FK: `id_jogo` → `jogo.id`
-      - Atributo: `texto`
-
-
-
-## 🔧 Funcionalidades Implementadas
-
-### Frontend (Next.js)
-
-  - ✅ Lista de jogos com filtro por gênero
-  - ✅ Detalhes do jogo com avaliações
-  - ✅ Sistema de login/logout
-  - ✅ Compra de jogos (usuários)
-  - ✅ Sistema de avaliações (usuários)
-  - ✅ Histórico de compras
-  - ✅ Painel administrativo básico
-  - ✅ Design responsivo com Tailwind CSS
-
-### Backend (Node.js + Express)
-
-  - ✅ API REST com TypeScript
-  - ✅ Autenticação JWT
-  - ✅ Validação com Zod
-  - ✅ Middleware de autorização
-  - ✅ Integração com PostgreSQL via Prisma
-  - ✅ Tratamento de erros
-  - ✅ CORS configurado
-
-### Banco de Dados (PostgreSQL)
-
-  - ✅ Schema completo com constraints
-  - ✅ Índices para performance
-  - ✅ Triggers para validações
-  - ✅ Views para cálculos
-  - ✅ Dados de teste realistas
-  - ✅ Consultas de Álgebra Relacional
-
-
-
-## 📈 Dados de Teste
-
-O sistema inclui:
-
-  - 8 desenvolvedoras
-  - 20 jogos variados
-  - 12 usuários + 3 administradores
-  - 40 compras distribuídas no tempo
-  - 60 avaliações cobrindo toda a faixa de notas
-  - 15 vínculos de gestão sem sobreposição
-  - Cartões bancários e curiosidades dos jogos
-
-
-
-## 🔍 Consultas SQL Demonstrativas
-
-O arquivo `sql/05_queries_algebra.sql` contém 15 consultas demonstrando:
-
-  - Seleção ($\\sigma$)
-  - Projeção ($\\pi$)
-  - Junções ($\\bowtie$, $⟕$)
-  - Agregação (GROUP BY/HAVING)
-  - Operações de conjunto ($\\cup$, $\\cap$, $-$)
-  - Subconsultas (EXISTS, NOT EXISTS)
-  - Divisão relacional
-  - Funções de janela (RANK)
-
-
-
-## 🔠 Endpoints da API
-
-### Autenticação
-
-  - `POST /api/auth/login` - Login de usuário
-
-### Jogos
-
-  - `GET /api/jogos` - Listar todos os jogos
-  - `GET /api/jogos/:id` - Detalhes de um jogo
-  - `POST /api/jogos` - Criar jogo (admin)
-  - `PUT /api/jogos/:id` - Atualizar jogo (admin)
-  - `DELETE /api/jogos/:id` - Excluir jogo (admin)
-
-### Avaliações
-
-  - `GET /api/jogos/:id/avaliacoes` - Avaliações de um jogo
-  - `POST /api/jogos/:id/avaliacoes` - Criar avaliação (usuário)
-
-### Usuários
-
-  - `POST /api/usuarios/:id/compras` - Realizar compra
-  - `GET /api/usuarios/:id/compras` - Histórico de compras
-  - `POST /api/usuarios/:id/cartoes` - Cadastrar cartão
-  - `GET /api/usuarios/:id/cartoes` - Listar cartões
-
-### Health Check
-
-  - `GET /api/health` - Status da API
-
-
-
-## 🧪 Testando a API
-
-### Exemplo com curl:
-
-```bash
-# Login
-curl -X POST http://localhost:3001/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"ana.silva@email.com","senha":"senha123"}'
-
-# Listar jogos
-curl http://localhost:3001/api/jogos
-
-# Comprar jogo (com token)
-curl -X POST http://localhost:3001/api/usuarios/12345678901/compras \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN" \
-  -d '{"id_jogo":1,"valor_pago":0.00}'
-```
-
-
-
-## 🔒 Validações e Constraints
-
-### Triggers Implementados
-
-1.  **check\_gerencia\_overlap**: Impede sobreposição de períodos de gestão
-2.  **check\_compra\_data\_lancamento**: Impede compra antes do lançamento
-3.  **check\_avaliacao\_compra**: Exige compra antes da avaliação
-
-### Constraints de Domínio
-
-  - **CPF**: formato 11 dígitos
-  - **CNPJ**: formato 14 dígitos
-  - **Email**: formato válido
-  - **Nota**: entre 0 e 10
-  - **Valor**: não negativo
-  - **Cartão**: validações de formato e validade
-
-
-
-## 📁 Estrutura do Projeto
-
-```
-├── docker-compose.yml             # Orquestração dos serviços
-├── sql/                           # Scripts SQL
-│   ├── 01_schema.sql              # Criação das tabelas
-│   ├── 02_constraints_indices_triggers.sql
-│   ├── 03_views.sql               # Views calculadas
-│   ├── 04_seed.sql                # Dados de teste
-│   └── 05_queries_algebra.sql     # Consultas demonstrativas
-├── api/                           # Backend Node.js
-│   ├── src/
-│   │   ├── controllers/           # Controladores REST
-│   │   ├── services/              # Lógica de negócio
-│   │   ├── repositories/          # Acesso a dados
-│   │   ├── middlewares/           # Middlewares
-│   │   ├── routes/                # Definição de rotas
-│   │   └── types/                 # Tipos TypeScript
-│   ├── prisma/schema.prisma       # Schema Prisma
-│   └── package.json
-└── web/                           # Frontend Next.js
-    ├── src/
-    │   ├── app/                   # Páginas (App Router)
-    │   ├── components/            # Componentes React
-    │   ├── hooks/                 # Hooks customizados
-    │   ├── lib/                   # Utilitários
-    │   └── types/                 # Tipos TypeScript
-    └── package.json
-```
-
-
-
-## 🐛 Troubleshooting
-
-### Problemas Comuns
-
-1.  **Erro de conexão com banco**
-
-    ```bash
-    docker-compose down
-    docker-compose up -d db
-    # Aguarde alguns segundos
-    docker-compose up -d
-    ```
-
-2.  **API não responde**
-
-    ```bash
-    docker-compose logs api
-    ```
-
-3.  **Frontend não carrega**
-
-    ```bash
-    docker-compose logs web
-    ```
-
-4.  **Resetar banco de dados**
-
-    ```bash
-    docker-compose down -v
-    docker-compose up -d
-    ```
-
-### Logs dos Serviços
-
-```bash
-# Ver logs de todos os serviços
-docker-compose logs -f
-
-# Ver logs de um serviço específico
-docker-compose logs -f db
-docker-compose logs -f api
-docker-compose logs -f web
-```
-
-
+### Usando PostgreSQL + pgAdmin
+
+1. **Crie o banco `gamestore`** no PostgreSQL:
+   ```sql
+   CREATE DATABASE gamestore;
+   ```
+
+2. **Abra o pgAdmin**, conecte ao servidor e selecione o banco `gamestore`.
+
+3. **Execute os scripts na ordem**:
+   - `01_schema.sql` → cria tabelas  
+   - `02_constraints_indices_triggers.sql` → adiciona constraints, índices e triggers  
+   - `03_views.sql` → cria views (inclua views no **plural** se a API esperar, ex.: `CREATE VIEW jogos AS SELECT * FROM jogo;`)  
+   - `04_seed.sql` → insere dados de teste  
+
+4. **Testes rápidos**:
+   ```sql
+   -- Listar tabelas/views
+   \dt+
+
+   -- Conferir dados
+   SELECT COUNT(*) FROM jogo;
+   SELECT COUNT(*) FROM compra;
+   SELECT COUNT(*) FROM avaliacao;
+
+   -- Caso use views no plural
+   SELECT COUNT(*) FROM jogos;
+   ```
+
+5. **Subir a API (sem Docker)**:
+   ```bash
+   cd api
+   # .env (ajuste <usuario>):
+   # DATABASE_URL=postgresql://<usuario>@localhost:5432/gamestore
+   npm install
+   npm run dev
+   ```
+
+6. **Subir o Frontend (sem Docker)**:
+   ```bash
+   cd ../web
+   # .env.local
+   # NEXT_PUBLIC_API_URL=http://localhost:3001
+   npm install
+   npm run dev
+   ```
+
+---
 
 ## 📈 Melhorias Futuras
 
-  - Sistema de upload de imagens para jogos
-  - Carrinho de compras
-  - Sistema de wishlist
-  - Relatórios administrativos avançados
-  - Sistema de cupons de desconto
-  - Integração com gateway de pagamento
-  - Sistema de notificações
-  - Cache com Redis
-  - Testes automatizados
-
-
-
-## 📝 Notas de Implementação
-
-### Decisões Técnicas
-
-  - **Prisma ORM**: Escolhido pela type-safety e facilidade de uso
-  - **JWT**: Para autenticação stateless
-  - **Tailwind CSS**: Para estilização rápida e consistente
-  - **Zod**: Para validação de dados tanto no frontend quanto no backend
-  - **Docker**: Para facilitar o *deployment* e desenvolvimento
-
-### Conformidade com Requisitos
-
-  - ✅ Modelo ERE corrigido implementado
-  - ✅ Mapeamento relacional completo
-  - ✅ Constraints e triggers funcionais
-  - ✅ API REST segura
-  - ✅ Frontend moderno e funcional
-  - ✅ Docker Compose com 3 serviços
-  - ✅ Dados de teste realistas
-  - ✅ Consultas de Álgebra Relacional
-  - ✅ README com instruções completas
-
-
-
-## 🤝 Contribuição
-
-Este projeto foi desenvolvido como trabalho acadêmico seguindo as especificações do TP1 corrigido.
-
-
-
-**Desenvolvido com ❤️ para a disciplina de Banco de Dados**
+- Upload de imagens  
+- Carrinho de compras  
+- Wishlist  
+- Relatórios administrativos  
+- Integração com pagamento  
+- Cache Redis  
+- Testes automatizados
