@@ -7,6 +7,8 @@ O sistema foi construído a partir do **modelo ERE corrigido do TP1** e entregue
 
 ## 📖 Mini Mundo
 
+![Modelo Mini Mundo](diagrama_BD.png)
+
 A **GameStore** é uma plataforma digital de venda de jogos eletrônicos.  
 No sistema, existem **usuários comuns** e **administradores**.  
 
@@ -48,11 +50,15 @@ No sistema, existem **usuários comuns** e **administradores**.
 |                     | nacionalidade        | TEXT         |    |    | País de origem |
 | **jogo**            | id                   | SERIAL       | ✔  |    | Identificador |
 |                     | nome                 | TEXT         |    |    | Nome do jogo |
-|                     | genero               | TEXT         |    |    | Categoria |
 |                     | descricao            | TEXT         |    |    | Sinopse |
+|                     | data_lancamento      | DATE         |    |    | Data de lançamento |
+|                     | valor                | NUMERIC(10,2)|    |    | Preço do jogo |
 |                     | id_desenvolvedora    | VARCHAR(14)  |    | FK | Desenvolvedora |
-| **genero**          | nome                 | TEXT         | ✔  |    | Nome do gênero |
+| **genero**          | id                   | SERIAL       | ✔  |    | Identificador |
+|                     | nome                 | VARCHAR(50)  |    |    | Nome do gênero |
 |                     | caracteristica       | TEXT         |    |    | Descrição do gênero |
+| **jogo_genero**     | id_jogo              | INT          | ✔  | FK | Jogo |
+|                     | id_genero            | INT          | ✔  | FK | Gênero |
 | **cartao_bancario** | id_usuario           | VARCHAR(11)  | ✔  | FK | Dono do cartão |
 |                     | numero               | TEXT         | ✔  |    | Número do cartão |
 |                     | bandeira             | TEXT         |    |    | Visa, Master etc |
@@ -89,12 +95,15 @@ No sistema, existem **usuários comuns** e **administradores**.
 - usuario(`cpf` FK→pessoa)  
 - administrador(`cpf` FK→pessoa, permissoes)  
 - desenvolvedora(`cnpj`, nome, nacionalidade)  
-- jogo(`id`, nome, genero, descricao, data_lancamento, valor, id_desenvolvedora FK→desenvolvedora)  
+- jogo(`id`, nome, descricao, data_lancamento, valor, id_desenvolvedora FK→desenvolvedora)
+- genero(`id`, nome, caracteristica)
+- jogo_genero(`id_jogo` FK→jogo, `id_genero` FK→genero)
 - cartao_bancario(`id_usuario` FK→usuario, `numero`, bandeira, validade_mes, validade_ano, codigo_seguranca)  
 - compra(`id_usuario` FK→usuario, `id_jogo` FK→jogo, data_compra, valor_pago)  
 - avaliacao(`id_usuario` FK→usuario, `id_jogo` FK→jogo, nota, texto, data_publicacao)  
 - gerencia(`id_admin` FK→administrador, `id_jogo` FK→jogo, data_inicio, data_fim)  
-- curiosidade_jogo(`id`, `id_jogo` FK→jogo, texto)  
+- cria(`cnpj`, `id_jogo`, data_lancamento, valor)
+- contrata(`cnpj`, `id_admin`)
 
 ---
 
@@ -117,57 +126,79 @@ O esquema físico completo está nos arquivos:
 O arquivo `sql/05_queries_algebra.sql` contém 15 consultas demonstrativas.  
 Abaixo, exemplos prontos para copiar:
 
-### 1. Seleção (σ) — Jogos do gênero "Ação"
+### 1. Seleção (σ) — Jogos que custam mais de R$100
 ```sql
-SELECT * FROM jogo WHERE genero = 'Ação';
+SELECT j.id, j.nome, j.valor, j.data_lancamento
+FROM jogo j 
+WHERE j.valor > 100;
 ```
 
-### 2. Projeção (π) — Nomes dos usuários cadastrados
+### 2. Projeção (π) — Nomes e emails dos usuários cadastrados
 ```sql
-SELECT nome FROM pessoa;
+SELECT p.nome, p.email 
+FROM pessoa p
+JOIN usuario u ON p.cpf = u.cpf;
 ```
 
-### 3. Junção (⨝) — Jogos e suas desenvolvedoras
+### 3. Junção (⨝) — Jogos com seus gêneros e desenvolvedoras
 ```sql
-SELECT j.nome AS jogo, d.nome AS desenvolvedora
+SELECT j.nome AS jogo, 
+       STRING_AGG(DISTINCT g.nome, ', ') AS generos,
+       d.nome AS desenvolvedora
 FROM jogo j
-JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj;
+JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj
+LEFT JOIN jogo_genero jg ON j.id = jg.id_jogo
+LEFT JOIN genero g ON jg.id_genero = g.id
+GROUP BY j.id, j.nome, d.nome;
 ```
 
 ### 4. Agregação (GROUP BY / HAVING) — Média de avaliações por jogo
 ```sql
-SELECT j.nome, AVG(a.nota) AS media
-FROM avaliacao a
-JOIN jogo j ON a.id_jogo = j.id
-GROUP BY j.nome;
+SELECT j.nome, 
+       ROUND(AVG(a.nota), 2) AS media_avaliacao,
+       COUNT(a.nota) AS total_avaliacoes
+FROM jogo j
+JOIN avaliacao a ON j.id = a.id_jogo
+GROUP BY j.id, j.nome
+HAVING AVG(a.nota) >= 8;
 ```
 
-### 5. Operação de conjunto (∪) — Jogos de ação ou aventura
+### 5. Operação de conjunto (∪) — Jogos de RPG ou Ação
 ```sql
-SELECT nome FROM jogo WHERE genero = 'Ação'
+SELECT DISTINCT j.nome 
+FROM jogo j
+JOIN jogo_genero jg ON j.id = jg.id_jogo
+JOIN genero g ON jg.id_genero = g.id
+WHERE g.nome = 'RPG'
 UNION
-SELECT nome FROM jogo WHERE genero = 'Aventura';
+SELECT DISTINCT j.nome 
+FROM jogo j
+JOIN jogo_genero jg ON j.id = jg.id_jogo
+JOIN genero g ON jg.id_genero = g.id
+WHERE g.nome = 'Ação';
 ```
 
 ### 6. Subconsulta (EXISTS) — Usuários que compraram pelo menos um jogo
 ```sql
-SELECT p.nome
+SELECT p.nome, p.email
 FROM pessoa p
+JOIN usuario u ON p.cpf = u.cpf
 WHERE EXISTS (
-  SELECT 1 FROM compra c WHERE c.id_usuario = p.cpf
+  SELECT 1 FROM compra c WHERE c.id_usuario = u.cpf
 );
 ```
 
-### 7. Divisão relacional — Usuários que compraram todos os jogos de uma desenvolvedora (ex.: 'Nintendo')
+### 7. Divisão relacional — Usuários que compraram todos os jogos de RPG
 ```sql
-SELECT u.cpf, p.nome
-FROM usuario u
-JOIN pessoa p ON u.cpf = p.cpf
+SELECT p.nome
+FROM pessoa p
+JOIN usuario u ON p.cpf = u.cpf
 WHERE NOT EXISTS (
   SELECT j.id
   FROM jogo j
-  JOIN desenvolvedora d ON j.id_desenvolvedora = d.cnpj
-  WHERE d.nome = 'Nintendo'
+  JOIN jogo_genero jg ON j.id = jg.id_jogo
+  JOIN genero g ON jg.id_genero = g.id
+  WHERE g.nome = 'RPG'
   EXCEPT
   SELECT c.id_jogo
   FROM compra c
@@ -177,11 +208,56 @@ WHERE NOT EXISTS (
 
 ### 8. Funções de janela (RANK) — Ranking dos jogos mais bem avaliados
 ```sql
-SELECT j.nome, AVG(a.nota) AS media,
+SELECT j.nome, 
+       ROUND(AVG(a.nota), 2) AS media,
        RANK() OVER (ORDER BY AVG(a.nota) DESC) AS posicao
 FROM jogo j
 JOIN avaliacao a ON j.id = a.id_jogo
-GROUP BY j.nome;
+GROUP BY j.id, j.nome
+ORDER BY media DESC;
+```
+
+### 9. Junção Externa (LEFT JOIN) — Todos os jogos com suas avaliações (incluindo sem avaliação)
+```sql
+SELECT j.nome,
+       COALESCE(ROUND(AVG(a.nota), 2), 0) AS media_avaliacao,
+       COUNT(a.nota) AS total_avaliacoes
+FROM jogo j
+LEFT JOIN avaliacao a ON j.id = a.id_jogo
+GROUP BY j.id, j.nome
+ORDER BY media_avaliacao DESC;
+```
+
+### 10. Subconsulta correlacionada — Jogos com preço acima da média
+```sql
+SELECT j.nome, j.valor
+FROM jogo j
+WHERE j.valor > (
+  SELECT AVG(valor) FROM jogo
+)
+ORDER BY j.valor DESC;
+```
+
+### 11. Interseção (∩) — Jogos comprados E avaliados por um usuário
+```sql
+SELECT j.nome
+FROM jogo j
+WHERE j.id IN (
+  SELECT c.id_jogo FROM compra c WHERE c.id_usuario = '12345678901'
+  INTERSECT
+  SELECT a.id_jogo FROM avaliacao a WHERE a.id_usuario = '12345678901'
+);
+```
+
+### 12. Diferença (−) — Jogos comprados mas não avaliados
+```sql
+SELECT j.nome
+FROM jogo j
+WHERE j.id IN (
+  SELECT c.id_jogo FROM compra c WHERE c.id_usuario = '12345678901'
+  EXCEPT
+  SELECT a.id_jogo FROM avaliacao a WHERE a.id_usuario = '12345678901'
+);
 ```
 
 ---
@@ -322,4 +398,5 @@ Este comando irá:
   - ✅ Dados de teste realistas
   - ✅ Consultas de Álgebra Relacional
   - ✅ README com instruções completas
+
 
