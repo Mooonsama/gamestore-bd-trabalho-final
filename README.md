@@ -5,6 +5,11 @@ O sistema foi construído a partir do **modelo ERE corrigido do TP1** e entregue
 
 https://github.com/Mooonsama/gamestore-bd-trabalho-final
 
+## Desenvolvedores:
+- Henrique Guimarães Cotta Lima 22.1.8011
+- Gabriel Miller Godoi 22.1.8101
+- Gustavo Moreira Sousa 22.1.8007
+
 ---
 
 ## 📖 Mini Mundo
