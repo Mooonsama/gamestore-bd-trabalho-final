@@ -3,6 +3,8 @@
 Projeto acadêmico da disciplina **Banco de Dados I**, implementando um **sistema de loja de jogos digitais**.  
 O sistema foi construído a partir do **modelo ERE corrigido do TP1** e entregue conforme as exigências do **TP2**.
 
+https://github.com/Mooonsama/gamestore-bd-trabalho-final
+
 ---
 
 ## 📖 Mini Mundo
